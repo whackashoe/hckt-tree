@@ -4,7 +4,7 @@
 
 int main(int argc, char ** argv)
 {
-    Quadtree<3, int> m;
+    Quadtree<int> m;
     auto pos_a = decltype(m)::get_position(TOPRIGHT, TOPRIGHT, BOTRIGHT);
     auto pos_b = decltype(m)::get_position(BOTRIGHT, BOTLEFT, TOPLEFT);
     m.insert(pos_a, 10);

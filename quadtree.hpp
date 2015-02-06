@@ -7,12 +7,12 @@
 #include "direction.hpp"
 
 
-template <unsigned int DepthStep, typename ValueType>
+template <typename ValueType>
 class Quadtree
 {
 protected:
-    std::array<ValueType, (1 << DepthStep * 2)> values;
-    std::bitset<(1 << DepthStep * 2)> bitset;
+    std::array<ValueType, 64> values;
+    std::bitset<64> bitset;
     std::vector<Quadtree*> children;
 
     size_t get_children_position(const size_t position) const
@@ -64,12 +64,12 @@ public:
 
     void insert(const size_t position, const ValueType value)
     {
-        children.emplace(children.begin() + get_children_position(position), new Quadtree<DepthStep, ValueType>());
+        children.emplace(children.begin() + get_children_position(position), new Quadtree<ValueType>());
         bitset.set(position);
         values[position] = value;
     }
 
-    Quadtree<DepthStep, ValueType> * leaf(const size_t position) const
+    Quadtree<ValueType> * leaf(const size_t position) const
     {
         return children[get_children_position(position)];
     }
