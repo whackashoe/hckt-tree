@@ -91,6 +91,18 @@ public:
     }
 
     /*
+     * removes an item from tree
+     * position should be result of get_position
+     */
+    void remove(const size_t position)
+    {
+        const size_t pos = get_children_position(position);
+        children[pos]->collapse();
+        children.erase(children.begin() + pos);
+        bitset.reset(position);
+    }
+
+    /*
      * get child node 
      * position should be result of get_position
      */
