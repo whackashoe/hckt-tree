@@ -4,6 +4,8 @@
 #include <array>
 #include <vector>
 #include <bitset>
+#include "direction.hpp"
+
 
 template <unsigned int DepthStep, typename ValueType>
 class Quadtree
@@ -26,6 +28,7 @@ protected:
         return c;
     }
 
+
 public:
     Quadtree() : values(), bitset{0}, children{}
     {}
@@ -33,6 +36,15 @@ public:
     ~Quadtree()
     {
         collapse();
+    }
+
+    static size_t get_position(size_t l1, size_t  l2, size_t l3)
+    {
+        return l1
+            + (1 << (l2 & 1 * 2))
+            + (1 << (((l2 & 2) >> 1) * 3))
+            + (1 << (l3 & 1 * 4))
+            + (1 << (((l3 & 2) >> 1) * 5));
     }
 
     bool empty() const
@@ -71,8 +83,6 @@ public:
     {
         return values[position];
     }
-
-
 };
 
 
