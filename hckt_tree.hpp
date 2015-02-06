@@ -1,5 +1,5 @@
-#ifndef QUADTREE_H
-#define QUADTREE_H
+#ifndef HCKT_TREE_H
+#define HCKT_TREE_H
 
 #include <array>
 #include <vector>
@@ -8,12 +8,12 @@
 
 
 template <typename ValueType>
-class Quadtree
+class hckt_tree
 {
 protected:
     std::array<ValueType, 64> values;
     std::bitset<64> bitset;
-    std::vector<Quadtree*> children;
+    std::vector<hckt_tree*> children;
 
     size_t get_children_position(const size_t position) const
     {
@@ -30,10 +30,10 @@ protected:
 
 
 public:
-    Quadtree() : values(), bitset{0}, children{}
+    hckt_tree() : values(), bitset{0}, children{}
     {}
 
-    ~Quadtree()
+    ~hckt_tree()
     {
         collapse();
     }
@@ -65,12 +65,12 @@ public:
 
     void insert(const size_t position, const ValueType value)
     {
-        children.emplace(children.begin() + get_children_position(position), new Quadtree<ValueType>());
+        children.emplace(children.begin() + get_children_position(position), new hckt_tree<ValueType>());
         bitset.set(position);
         values[position] = value;
     }
 
-    Quadtree<ValueType> * leaf(const size_t position) const
+    hckt_tree<ValueType> * leaf(const size_t position) const
     {
         return children[get_children_position(position)];
     }
