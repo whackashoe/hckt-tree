@@ -7,10 +7,10 @@ TARGET=$(lastword $(subst /, ,$(realpath .)))
 CXX=g++
 
 all: $(TARGET)
-	@echo quadtree_soptim built
+	@echo hckt-tree built
 
 $(TARGET): $(OBJECTS)
-	@$(CXX) $(CXXFLAGS) -o quadtree_soptim $(OBJECTS)
+	@$(CXX) $(CXXFLAGS) -o hckt-tree $(OBJECTS)
 
 clean:
 	rm -rf $(OBJECTS) $(TARGET)
