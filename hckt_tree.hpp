@@ -61,7 +61,7 @@ public:
      * y1:x1:y2:x2:y3:x3
      *
      */
-    static size_t get_position(const size_t d1, const size_t d2, const size_t d3)
+    static size_t get_position_2d(const size_t d1, const size_t d2, const size_t d3)
     {
         assert(d1 >= 0 && d1 < 4);
         assert(d2 >= 0 && d2 < 4);
@@ -75,6 +75,16 @@ public:
              + ((1 << 5) *  (d3 & 1));
     }
 
+    static size_t get_x_2d(const size_t d1, const size_t d2, const size_t d3)
+    {
+        return ((d1 & 1) << 0) + ((d2 & 1) << 1) + ((d3 & 1) << 2);
+    }
+
+    static size_t get_y_2d(const size_t d1, const size_t d2, const size_t d3)
+    {
+        return ((d1 & 2) >> 1 << 0) + ((d2 & 2) >> 1 << 1) + ((d3 & 2) >> 1 << 2);
+    }
+
     /*
      * 3d get position
      * convert two part positions to memory location
@@ -84,7 +94,7 @@ public:
      * z1:y1:x1:z2:y2:x2
      *
      */
-    static size_t get_position(const size_t d1, const size_t d2)
+    static size_t get_position_3d(const size_t d1, const size_t d2)
     {
         assert(d1 >= 0 && d1 < 8);
         assert(d2 >= 0 && d2 < 8);
@@ -96,6 +106,22 @@ public:
              + ((1 << 4) * ((d2 & 2) >> 1))
              + ((1 << 5) *  (d2 & 1));
     }
+
+    static size_t get_x_3d(const size_t d1, const size_t d2)
+    {
+        return ((d1 & 1) << 0) + ((d2 & 1) << 1);
+    }
+
+    static size_t get_y_3d(const size_t d1, const size_t d2)
+    {
+        return ((d1 & 2) >> 1 << 0) + ((d2 & 2) >> 1 << 1);
+    }
+
+    static size_t get_z_3d(const size_t d1, const size_t d2)
+    {
+        return ((d1 & 4) >> 2 << 0) + ((d2 & 4) >> 2 << 1);
+    }
+
 
     /*
      * check if we have any children
