@@ -114,6 +114,29 @@ void populate(hckt_tree<int> & m)
                                             for(size_t c3=0; c3<4; ++c3) {
                                                 auto subsubpos = hckt_tree<int>::get_position_2d(a3, b3, c3);
                                                 m.leaf(pos)->leaf(subpos)->insert(subsubpos, a3+b3+c3);
+
+
+                                                if(subsubpos % 6 == 0) { 
+                                                    for(size_t a4=0; a4<4; ++a4) {
+                                                        for(size_t b4=0; b4<4; ++b4) {
+                                                            for(size_t c4=0; c4<4; ++c4) {
+                                                                auto subsubsubpos = hckt_tree<int>::get_position_2d(a4, b4, c4);
+                                                                m.leaf(pos)->leaf(subpos)->leaf(subsubpos)->insert(subsubsubpos, a4+b4+c4);
+
+                                                                if(subsubsubpos % 6 == 0) { 
+                                                                    for(size_t a5=0; a5<4; ++a5) {
+                                                                        for(size_t b5=0; b5<4; ++b5) {
+                                                                            for(size_t c5=0; c5<4; ++c5) {
+                                                                                auto subsubsubsubpos = hckt_tree<int>::get_position_2d(a5, b5, c5);
+                                                                                m.leaf(pos)->leaf(subpos)->leaf(subsubpos)->leaf(subsubsubpos)->insert(subsubsubsubpos, a5+b5+c5);
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
                                             }
                                         }
                                     }
