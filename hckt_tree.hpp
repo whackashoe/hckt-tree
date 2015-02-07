@@ -11,8 +11,8 @@ template <typename ValueType>
 class hckt_tree
 {
 protected:
-    std::array<ValueType, 64> values;
     std::bitset<64> bitset;
+    std::vector<ValueType> values;
     std::vector<hckt_tree<ValueType>*> children;
 
     size_t get_children_position(const size_t position) const
@@ -30,7 +30,7 @@ protected:
 
 
 public:
-    hckt_tree() : values { { } }, bitset { 0 }, children { }
+    hckt_tree() : bitset { 0 }, values { }, children { }
     {
     }
 
@@ -41,8 +41,10 @@ public:
     
     size_t calculate_memory_size() const
     {
-        size_t size = sizeof(values) + sizeof(bitset) + sizeof(children) + (children.size() * sizeof(hckt_tree<ValueType>*));
-        std::cout << size << std::endl;
+        size_t size = sizeof(bitset)
+                    + sizeof(values) + (values.size() * sizeof(ValueType))
+                    + sizeof(children) + (children.size() * sizeof(hckt_tree<ValueType>*));
+
         for(auto child : children) {
             size += child->calculate_memory_size();
         }
@@ -79,7 +81,6 @@ public:
 
     /*
      * destroy children
-     * note: this does not delete prior values in array
      */
     void collapse()
     {
@@ -88,6 +89,7 @@ public:
         }
 
         children.clear();
+        values.clear();
         bitset.reset();
     }
 
@@ -97,9 +99,10 @@ public:
      */
     void insert(const size_t position, const ValueType value)
     {
-        children.emplace(children.begin() + get_children_position(position), new hckt_tree<ValueType>());
+        auto cpos = get_children_position(position);
+        children.emplace(children.begin() + cpos, new hckt_tree<ValueType>());
+        values.emplace(values.begin() + cpos, value);
         bitset.set(position);
-        values[position] = value;
     }
 
     /*
@@ -108,9 +111,10 @@ public:
      */
     void remove(const size_t position)
     {
-        const size_t pos = get_children_position(position);
-        children[pos]->collapse();
-        children.erase(children.begin() + pos);
+        const size_t cpos = get_children_position(position);
+        children[cpos]->collapse();
+        children.erase(children.begin() + cpos);
+        values.erase(values.begin() + cpos);
         bitset.reset(position);
     }
 
@@ -125,22 +129,22 @@ public:
 
     /*
      * sets node to specific value
+     * note: this does not check whether a value has been inserted here yet
      * position should be result of get_position
      */
     void set_value(const size_t position, const ValueType value)
     {
-        values[position] = value;
+        values[get_children_position(position)] = value;
     }
 
     /*
      * gets value from specific position
-     * note: this does not check / concern itself if this has been collapsed
-     * if so the data is stale
+     * note: this does not check whether a value has been inserted here yet
      * position should be result of get_position
      */
     ValueType get_value(const size_t position) const
     {
-        return values[position];
+        return values[get_children_position(position)];
     }
 };
 
