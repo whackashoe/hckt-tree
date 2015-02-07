@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include "hckt_tree.hpp"
+#include "lmemvector.hpp"
 
 constexpr size_t window_width  { 512 };
 constexpr size_t window_height { 512 };

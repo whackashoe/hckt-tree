@@ -4,14 +4,15 @@
 #include <cassert>
 #include <vector>
 #include <bitset>
+#include "lmemvector.hpp"
 
 template <typename ValueType>
 class hckt_tree
 {
 protected:
     std::bitset<64> bitset;
-    std::vector<ValueType> values;
-    std::vector<hckt_tree<ValueType>*> children;
+    lmemvector<ValueType> values;
+    lmemvector<hckt_tree<ValueType>*> children;
 
     size_t get_children_position(const size_t position) const
     {
@@ -39,9 +40,10 @@ public:
     
     size_t calculate_memory_size() const
     {
+        const size_t amount_set { bitset.count() };
         size_t size { sizeof(bitset)
-                    + sizeof(values) + (values.size() * sizeof(ValueType))
-                    + sizeof(children) + (children.size() * sizeof(hckt_tree<ValueType>*))
+                    + sizeof(values)   + (amount_set * sizeof(ValueType))
+                    + sizeof(children) + (amount_set * sizeof(hckt_tree<ValueType>*))
         };
 
         for(auto child : children) {
@@ -152,8 +154,8 @@ public:
     void insert(const size_t position, const ValueType value)
     {
         auto cpos = get_children_position(position);
-        children.emplace(children.begin() + cpos, new hckt_tree<ValueType>());
-        values.emplace(values.begin() + cpos, value);
+        children.insert(cpos, new hckt_tree<ValueType>());
+        values.insert(cpos, value);
         bitset.set(position);
     }
 
@@ -165,8 +167,8 @@ public:
     {
         const size_t cpos = get_children_position(position);
         children[cpos]->collapse();
-        children.erase(children.begin() + cpos);
-        values.erase(values.begin() + cpos);
+        children.erase(cpos);
+        values.erase(cpos);
         bitset.reset(position);
     }
 
