@@ -1,11 +1,9 @@
 #ifndef HCKT_TREE_H
 #define HCKT_TREE_H
 
-#include <array>
+#include <cassert>
 #include <vector>
 #include <bitset>
-#include "direction.hpp"
-
 
 template <typename ValueType>
 class hckt_tree
