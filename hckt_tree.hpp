@@ -39,9 +39,10 @@ public:
     
     size_t calculate_memory_size() const
     {
-        size_t size = sizeof(bitset)
+        size_t size { sizeof(bitset)
                     + sizeof(values) + (values.size() * sizeof(ValueType))
-                    + sizeof(children) + (children.size() * sizeof(hckt_tree<ValueType>*));
+                    + sizeof(children) + (children.size() * sizeof(hckt_tree<ValueType>*))
+        };
 
         for(auto child : children) {
             size += child->calculate_memory_size();
@@ -52,6 +53,7 @@ public:
 
 
     /*
+     * 2d get position
      * convert three part positions to memory location
      * as input: (left = 0 | right = 1) + (top = 0 | bottom = 2)
      *
@@ -59,14 +61,40 @@ public:
      * y1:x1:y2:x2:y3:x3
      *
      */
-    static size_t get_position(size_t d1, size_t d2, size_t d3)
+    static size_t get_position(const size_t d1, const size_t d2, const size_t d3)
     {
+        assert(d1 >= 0 && d1 < 4);
+        assert(d2 >= 0 && d2 < 4);
+        assert(d3 >= 0 && d3 < 4);
+
         return ((1 << 0) * ((d1 & 2) >> 1))
              + ((1 << 1) *  (d1 & 1))
              + ((1 << 2) * ((d2 & 2) >> 1))
              + ((1 << 3) *  (d2 & 1))
              + ((1 << 4) * ((d3 & 2) >> 1))
              + ((1 << 5) *  (d3 & 1));
+    }
+
+    /*
+     * 3d get position
+     * convert two part positions to memory location
+     * as input: (left = 0 | right = 1) + (top = 0 | bottom = 2) + (in = 0 | out = 4)
+     *
+     * result will be:
+     * z1:y1:x1:z2:y2:x2
+     *
+     */
+    static size_t get_position(const size_t d1, const size_t d2)
+    {
+        assert(d1 >= 0 && d1 < 8);
+        assert(d2 >= 0 && d2 < 8);
+
+        return ((1 << 0) * ((d1 & 4) >> 2))
+             + ((1 << 1) * ((d1 & 2) >> 1))
+             + ((1 << 2) *  (d1 & 1))
+             + ((1 << 3) * ((d2 & 4) >> 2))
+             + ((1 << 4) * ((d2 & 2) >> 1))
+             + ((1 << 5) *  (d2 & 1));
     }
 
     /*
