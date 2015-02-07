@@ -13,7 +13,7 @@ class hckt_tree
 protected:
     std::array<ValueType, 64> values;
     std::bitset<64> bitset;
-    std::vector<hckt_tree*> children;
+    std::vector<hckt_tree<ValueType>*> children;
 
     size_t get_children_position(const size_t position) const
     {
@@ -38,6 +38,18 @@ public:
     {
         collapse();
     }
+    
+    size_t calculate_memory_size() const
+    {
+        size_t size = sizeof(values) + sizeof(bitset) + sizeof(children) + (children.size() * sizeof(hckt_tree<ValueType>*));
+        std::cout << size << std::endl;
+        for(auto child : children) {
+            size += child->calculate_memory_size();
+        }
+        
+        return size;
+    }
+
 
     /*
      * convert three part positions to memory location
