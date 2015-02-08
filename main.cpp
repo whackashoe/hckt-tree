@@ -27,7 +27,7 @@ void recursive_render(sf::RenderWindow & window, Tree * m, const int rsize, cons
                 const auto pos   = Tree::get_position_2d(a, b, c);
                 const auto ox    = offset_x + (rsize * Tree::get_x_2d(a, b, c));
                 const auto oy    = offset_y + (rsize * Tree::get_y_2d(a, b, c));
-                const sf::Uint8 col = m->get_value(pos) * 20;
+                const sf::Uint8 col = m->get_value(pos) * (255 / (4 * 4 * 4));
 
                 sf::RectangleShape square { sf::Vector2f { static_cast<float>(rsize), static_cast<float>(rsize) } };
                 square.setFillColor(sf::Color { col, col, col, 255 } );
@@ -76,9 +76,10 @@ void recursive_populate(Tree * m, const int depth, const int max_depth)
         for(size_t b=0; b<4; ++b) {
             for(size_t c=0; c<4; ++c) {
                 const auto pos = Tree::get_position_2d(a, b, c);
-                m->insert(pos, a+b+c);
+                const auto alg = (1 + a) * (1 + b) * (1 + c);
+                m->insert(pos, alg);
 
-                if(pos % 6 == 0) { 
+                if(alg % 5 == 1) { 
                     recursive_populate(m->leaf(pos), depth + 1, max_depth);
                 }
             }
