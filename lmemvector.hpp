@@ -5,6 +5,9 @@
 #include <algorithm> 
 #include <cstring>
 
+constexpr size_t init_capacity = 2;
+constexpr auto exp_inc = 1.5;
+
 #pragma pack(1)
 template <typename T>
 class lmemvector
@@ -12,9 +15,8 @@ class lmemvector
 private:
     void init()
     {
-        const size_t new_capacity = 1;
-        T * nb = new T[new_capacity];
-        _capacity = new_capacity;
+        T * nb = new T[init_capacity];
+        _capacity = init_capacity;
         buf = nb;
     }
 
@@ -116,7 +118,7 @@ public:
         ++_size;
         if(_size >= _capacity) {
             if(_capacity > 0) {
-                reserve(_capacity << 1);
+                reserve(_capacity * exp_inc);
             } else {
                 init();
             }
