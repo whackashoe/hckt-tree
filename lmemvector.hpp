@@ -29,6 +29,35 @@ public:
     lmemvector() : buf { nullptr }, _capacity { 0 }, _size { 0 } 
     {}
 
+    ~lmemvector()
+    {
+        if(_size != 0) {
+            delete[] buf;
+        }
+    }
+
+    lmemvector(const lmemvector & rval)
+    {
+        capacity = rval.capacity;
+        size = rval.size;
+        buf = new T[capacity];
+        std::copy(rval.begin(), rval.end(), buf.begin());
+    }
+
+    lmemvector operator=(const lmemvector & rval)
+    {
+        if(buf != nullptr) {
+            delete[] buf;
+        }
+
+        capacity = rval.capacity;
+        size = rval.size;
+        buf = new T[capacity];
+        std::copy(rval.begin(), rval.end(), buf.begin());
+
+        return *this;
+    }
+
     T operator[](const size_t n) const
     { return buf[n]; }
     T & operator[](const size_t n)
