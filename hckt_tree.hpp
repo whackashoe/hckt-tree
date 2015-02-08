@@ -40,10 +40,9 @@ public:
     
     size_t calculate_memory_size() const
     {
-        const size_t amount_set { bitset.count() };
         size_t size { sizeof(bitset)
-                    + sizeof(values)   + (amount_set * sizeof(ValueType))
-                    + sizeof(children) + (amount_set * sizeof(hckt_tree<ValueType>*))
+                    + sizeof(values)   + (values.capacity()   * sizeof(ValueType))
+                    + sizeof(children) + (children.capacity() * sizeof(hckt_tree<ValueType>*))
         };
 
         for(auto child : children) {
