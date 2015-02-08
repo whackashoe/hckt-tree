@@ -8,11 +8,11 @@ install:
 	sudo mkdir -p /usr/local/include/hckt
 	sudo cp include/*.hpp /usr/local/include/hckt
 
-examples: 2d
+examples: 2drender
 	@echo examples built
 
-2d: examples/2d.cpp
-	@$(CXX) $(CXXFLAGS) -o examples/2d examples/2d.cpp $(LDFLAGS)
+2drender: examples/2drender.cpp
+	@$(CXX) $(CXXFLAGS) -o examples/2drender examples/2drender.cpp $(LDFLAGS)
 
 clean:
-	rm examples/2d
+	rm examples/2drender
