@@ -11,13 +11,17 @@ constexpr size_t window_height { 512 };
 
 
 template <typename Tree>
-void recursive_render(sf::RenderWindow & window, Tree * m, const int rsize, const int offset_x, const int offset_y)
+void recursive_render(sf::RenderWindow & window, Tree * m, const float rsize, const float offset_x, const float offset_y)
 {
+    if(offset_x > window_width || offset_y > window_height) {
+        return;
+    }
+
     if(m->empty()) {
         return;
     }
 
-    if(rsize < 1) {
+    if(rsize < 1.0f / 8.0f) {
         return;
     }
 
@@ -29,12 +33,12 @@ void recursive_render(sf::RenderWindow & window, Tree * m, const int rsize, cons
                 const auto oy    = offset_y + (rsize * Tree::get_y_2d(a, b, c));
                 const sf::Uint8 col = m->get_value(pos) * (255 / (4 * 4 * 4));
 
-                sf::RectangleShape square { sf::Vector2f { static_cast<float>(rsize), static_cast<float>(rsize) } };
+                sf::RectangleShape square { sf::Vector2f { rsize, rsize } };
                 square.setFillColor(sf::Color { col, col, col, 255 } );
                 square.setPosition(ox, oy);
                 window.draw(square);
 
-                recursive_render(window, m->leaf(pos), rsize >> 3, ox, oy);
+                recursive_render(window, m->leaf(pos), rsize / 8.0f, ox, oy);
             }
         }
     }
@@ -43,9 +47,12 @@ void recursive_render(sf::RenderWindow & window, Tree * m, const int rsize, cons
 template <typename Tree>
 int render(sf::RenderWindow & window, const Tree & m)
 {
-    recursive_render(window, &m, 64, 0, 0);
+    double rsize = 64;
 
     while(1) {
+        recursive_render(window, &m, rsize, 0, 0);
+        rsize *= 1.01;
+
         sf::Event event;
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
@@ -96,7 +103,7 @@ void populate(Tree & m, const int depth)
 int main(int argc, char ** argv)
 {
     hckt_tree<uint32_t> m;
-    populate(m, 3);
+    populate(m, 6);
     std::cout << m.calculate_memory_size() << std::endl;
 
     sf::RenderWindow window{{window_width, window_height}, "hckt-tree"};
