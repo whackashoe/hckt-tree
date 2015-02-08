@@ -1,17 +1,18 @@
 CXXFLAGS=-O2 -std=c++11 -Wall -Wextra -Weffc++
 LDFLAGS = -lsfml-system -lsfml-graphics -lsfml-window
-
-SOURCES= $(wildcard *.cpp)
-OBJECTS=$(patsubst %.cpp, %.o, $(SOURCES))
-TARGET=$(lastword $(subst /, ,$(realpath .)))
-
 CXX=g++
 
-all: $(TARGET)
-	@echo hckt-tree built
+all: install examples
 
-$(TARGET): $(OBJECTS)
-	@$(CXX) $(CXXFLAGS) -o hckt-tree $(OBJECTS) $(LDFLAGS)
+install:
+	sudo mkdir -p /usr/local/include/hckt
+	sudo cp include/*.hpp /usr/local/include/hckt
+
+examples: 2d
+	@echo examples built
+
+2d: examples/2d.cpp
+	@$(CXX) $(CXXFLAGS) -o examples/2d examples/2d.cpp $(LDFLAGS)
 
 clean:
-	rm -rf $(OBJECTS) $(TARGET)
+	rm examples/2d
