@@ -13,7 +13,7 @@ constexpr size_t window_height { 512 };
 #include "inc_render_2d_a.cpp"
 
 
-int main(int argc, char ** argv)
+int main()
 {
     hckt_tree<uint32_t> m;
     populate(m, 5);
