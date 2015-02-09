@@ -16,6 +16,8 @@ protected:
 
     size_t get_children_position(const size_t position) const
     {
+        assert(position >= 0 && position < 64);
+
         size_t c { 0 };
 
         for(size_t i=0; i<position; ++i) {
@@ -78,11 +80,19 @@ public:
 
     static size_t get_x_2d(const size_t d1, const size_t d2, const size_t d3)
     {
+        assert(d1 >= 0 && d1 < 4);
+        assert(d2 >= 0 && d2 < 4);
+        assert(d3 >= 0 && d3 < 4);
+
         return ((d1 & 1) << 0) + ((d2 & 1) << 1) + ((d3 & 1) << 2);
     }
 
     static size_t get_y_2d(const size_t d1, const size_t d2, const size_t d3)
     {
+        assert(d1 >= 0 && d1 < 4);
+        assert(d2 >= 0 && d2 < 4);
+        assert(d3 >= 0 && d3 < 4);
+
         return ((d1 & 2) >> 1 << 0) + ((d2 & 2) >> 1 << 1) + ((d3 & 2) >> 1 << 2);
     }
 
@@ -110,16 +120,25 @@ public:
 
     static size_t get_x_3d(const size_t d1, const size_t d2)
     {
+        assert(d1 >= 0 && d1 < 8);
+        assert(d2 >= 0 && d2 < 8);
+
         return ((d1 & 1) << 0) + ((d2 & 1) << 1);
     }
 
     static size_t get_y_3d(const size_t d1, const size_t d2)
     {
+        assert(d1 >= 0 && d1 < 8);
+        assert(d2 >= 0 && d2 < 8);
+
         return ((d1 & 2) >> 1 << 0) + ((d2 & 2) >> 1 << 1);
     }
 
     static size_t get_z_3d(const size_t d1, const size_t d2)
     {
+        assert(d1 >= 0 && d1 < 8);
+        assert(d2 >= 0 && d2 < 8);
+
         return ((d1 & 4) >> 2 << 0) + ((d2 & 4) >> 2 << 1);
     }
 
@@ -152,7 +171,9 @@ public:
      */
     void insert(const size_t position, const ValueType value)
     {
-        auto cpos = get_children_position(position);
+        const size_t cpos { get_children_position(position) };
+        assert(cpos >= 0 && cpos < 64);
+
         children.insert(cpos, new hckt_tree<ValueType>());
         values.insert(cpos, value);
         bitset.set(position);
@@ -164,7 +185,9 @@ public:
      */
     void remove(const size_t position)
     {
-        const size_t cpos = get_children_position(position);
+        const size_t cpos { get_children_position(position) };
+        assert(cpos >= 0 && cpos < 64);
+        
         children[cpos]->collapse();
         children.erase(cpos);
         values.erase(cpos);
@@ -177,7 +200,10 @@ public:
      */
     hckt_tree<ValueType> * leaf(const size_t position) const
     {
-        return children[get_children_position(position)];
+        const size_t cpos { get_children_position(position) };
+        assert(cpos >= 0 && cpos < 64);
+        
+        return children[cpos];
     }
 
     /*
@@ -187,7 +213,10 @@ public:
      */
     void set_value(const size_t position, const ValueType value)
     {
-        values[get_children_position(position)] = value;
+        const size_t cpos { get_children_position(position) };
+        assert(cpos >= 0 && cpos < 64);
+        
+        values[cpos] = value;
     }
 
     /*
@@ -197,7 +226,10 @@ public:
      */
     ValueType get_value(const size_t position) const
     {
-        return values[get_children_position(position)];
+        const size_t cpos { get_children_position(position) };
+        assert(cpos >= 0 && cpos < 64);
+        
+        return values[cpos];
     }
 };
 
