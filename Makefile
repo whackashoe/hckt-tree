@@ -21,4 +21,4 @@ examples: 2d_zoom_render 2d_zoom_render_lowmem 2d_zoom_render_deep_sparse
 	@$(CXX) $(CXXFLAGS) -o examples/2d_zoom_render_deep_sparse examples/2d_zoom_render_deep_sparse.cpp $(LDFLAGS)
 
 clean:
-	rm examples/2d_zoom_render examples/2d_zoom_render_lowmem
+	rm examples/2d_zoom_render examples/2d_zoom_render_lowmem examples/2d_zoom_render_deep_sparse
