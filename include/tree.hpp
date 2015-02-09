@@ -14,13 +14,13 @@ protected:
     lmemvector<ValueType> values;
     lmemvector<hckt_tree<ValueType>*> children;
 
-    size_t get_children_position(const size_t position) const
+    std::size_t get_children_position(const std::size_t position) const
     {
         assert(position >= 0 && position < 64);
 
-        size_t c { 0 };
+        std::size_t c { 0 };
 
-        for(size_t i=0; i<position; ++i) {
+        for(std::size_t i=0; i<position; ++i) {
             if(bitset[i]) {
                 ++c;
             }
@@ -40,9 +40,9 @@ public:
         collapse();
     }
     
-    size_t calculate_memory_size() const
+    std::size_t calculate_memory_size() const
     {
-        size_t size { sizeof(bitset)
+        std::size_t size { sizeof(bitset)
                     + sizeof(values)   + (values.capacity()   * sizeof(ValueType))
                     + sizeof(children) + (children.capacity() * sizeof(hckt_tree<ValueType>*))
         };
@@ -64,7 +64,7 @@ public:
      * y1:x1:y2:x2:y3:x3
      *
      */
-    static size_t get_position_2d(const size_t d1, const size_t d2, const size_t d3)
+    static std::size_t get_position_2d(const std::size_t d1, const std::size_t d2, const std::size_t d3)
     {
         assert(d1 >= 0 && d1 < 4);
         assert(d2 >= 0 && d2 < 4);
@@ -78,7 +78,7 @@ public:
              + ((1 << 5) *  (d3 & 1));
     }
 
-    static size_t get_x_2d(const size_t d1, const size_t d2, const size_t d3)
+    static std::size_t get_x_2d(const std::size_t d1, const std::size_t d2, const std::size_t d3)
     {
         assert(d1 >= 0 && d1 < 4);
         assert(d2 >= 0 && d2 < 4);
@@ -87,7 +87,7 @@ public:
         return ((d1 & 1) << 0) + ((d2 & 1) << 1) + ((d3 & 1) << 2);
     }
 
-    static size_t get_y_2d(const size_t d1, const size_t d2, const size_t d3)
+    static std::size_t get_y_2d(const std::size_t d1, const std::size_t d2, const std::size_t d3)
     {
         assert(d1 >= 0 && d1 < 4);
         assert(d2 >= 0 && d2 < 4);
@@ -105,7 +105,7 @@ public:
      * z1:y1:x1:z2:y2:x2
      *
      */
-    static size_t get_position_3d(const size_t d1, const size_t d2)
+    static std::size_t get_position_3d(const std::size_t d1, const std::size_t d2)
     {
         assert(d1 >= 0 && d1 < 8);
         assert(d2 >= 0 && d2 < 8);
@@ -118,7 +118,7 @@ public:
              + ((1 << 5) *  (d2 & 1));
     }
 
-    static size_t get_x_3d(const size_t d1, const size_t d2)
+    static std::size_t get_x_3d(const std::size_t d1, const std::size_t d2)
     {
         assert(d1 >= 0 && d1 < 8);
         assert(d2 >= 0 && d2 < 8);
@@ -126,7 +126,7 @@ public:
         return ((d1 & 1) << 0) + ((d2 & 1) << 1);
     }
 
-    static size_t get_y_3d(const size_t d1, const size_t d2)
+    static std::size_t get_y_3d(const std::size_t d1, const std::size_t d2)
     {
         assert(d1 >= 0 && d1 < 8);
         assert(d2 >= 0 && d2 < 8);
@@ -134,7 +134,7 @@ public:
         return ((d1 & 2) >> 1 << 0) + ((d2 & 2) >> 1 << 1);
     }
 
-    static size_t get_z_3d(const size_t d1, const size_t d2)
+    static std::size_t get_z_3d(const std::size_t d1, const std::size_t d2)
     {
         assert(d1 >= 0 && d1 < 8);
         assert(d2 >= 0 && d2 < 8);
@@ -169,9 +169,9 @@ public:
      * insert an item into position of tree
      * position should be result of get_position
      */
-    void insert(const size_t position, const ValueType value)
+    void insert(const std::size_t position, const ValueType value)
     {
-        const size_t cpos { get_children_position(position) };
+        const std::size_t cpos { get_children_position(position) };
         assert(cpos >= 0 && cpos < 64);
 
         children.insert(cpos, new hckt_tree<ValueType>());
@@ -183,9 +183,9 @@ public:
      * removes an item from tree
      * position should be result of get_position
      */
-    void remove(const size_t position)
+    void remove(const std::size_t position)
     {
-        const size_t cpos { get_children_position(position) };
+        const std::size_t cpos { get_children_position(position) };
         assert(cpos >= 0 && cpos < 64);
         
         children[cpos]->collapse();
@@ -198,9 +198,9 @@ public:
      * get child node 
      * position should be result of get_position
      */
-    hckt_tree<ValueType> * leaf(const size_t position) const
+    hckt_tree<ValueType> * leaf(const std::size_t position) const
     {
-        const size_t cpos { get_children_position(position) };
+        const std::size_t cpos { get_children_position(position) };
         assert(cpos >= 0 && cpos < 64);
         
         return children[cpos];
@@ -211,9 +211,9 @@ public:
      * note: this does not check whether a value has been inserted here yet
      * position should be result of get_position
      */
-    void set_value(const size_t position, const ValueType value)
+    void set_value(const std::size_t position, const ValueType value)
     {
-        const size_t cpos { get_children_position(position) };
+        const std::size_t cpos { get_children_position(position) };
         assert(cpos >= 0 && cpos < 64);
         
         values[cpos] = value;
@@ -224,9 +224,9 @@ public:
      * note: this does not check whether a value has been inserted here yet
      * position should be result of get_position
      */
-    ValueType get_value(const size_t position) const
+    ValueType get_value(const std::size_t position) const
     {
-        const size_t cpos { get_children_position(position) };
+        const std::size_t cpos { get_children_position(position) };
         assert(cpos >= 0 && cpos < 64);
         
         return values[cpos];

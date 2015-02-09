@@ -5,7 +5,7 @@
 #include <algorithm> 
 #include <cstring>
 
-constexpr size_t init_capacity = 2;
+constexpr std::size_t init_capacity = 2;
 constexpr auto exp_inc = 1.5;
 
 #pragma pack(1)
@@ -22,7 +22,7 @@ private:
 
 public:
     typedef T* iterator;
-    typedef uint8_t size_type;
+    typedef std::uint8_t size_type;
 
     T * buf;
     size_type _capacity;
@@ -60,9 +60,9 @@ public:
         return *this;
     }
 
-    T operator[](const size_t n) const
+    T operator[](const std::size_t n) const
     { return buf[n]; }
-    T & operator[](const size_t n)
+    T & operator[](const std::size_t n)
     { return buf[n]; }
 
     iterator begin()
@@ -98,13 +98,13 @@ public:
         _size = 0;
     }
 
-    void erase(const size_type position)
+    void erase(const std::size_t position)
     {
         --_size;
         std::memmove(buf + position, buf + position + 1, sizeof(T) * (_size + 1 - position));
     }
 
-    void reserve(const size_t new_capacity)
+    void reserve(const std::size_t new_capacity)
     {
         T * nb = new T[new_capacity];
         std::copy(begin(), end(), nb);
@@ -113,7 +113,7 @@ public:
         buf = nb;
     }
 
-    void insert(const size_type position, const T value)
+    void insert(const std::size_t position, const T value)
     {
         ++_size;
         if(_size >= _capacity) {
