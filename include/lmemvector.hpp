@@ -100,12 +100,16 @@ public:
 
     void erase(const std::size_t position)
     {
+        assert(position < std::numeric_limits<size_type>::max());
+
         --_size;
         std::memmove(buf + position, buf + position + 1, sizeof(T) * (_size + 1 - position));
     }
 
     void reserve(const std::size_t new_capacity)
     {
+        assert(new_capacity < std::numeric_limits<size_type>::max());
+
         T * nb = new T[new_capacity];
         std::copy(begin(), end(), nb);
         delete[] buf;
@@ -115,6 +119,8 @@ public:
 
     void insert(const std::size_t position, const T value)
     {
+        assert(position < std::numeric_limits<size_type>::max());
+
         ++_size;
         if(_size >= _capacity) {
             if(_capacity > 0) {
