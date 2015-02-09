@@ -1,4 +1,4 @@
-CXXFLAGS=-O2 -std=c++11 -Wall -Wextra -Weffc++
+CXXFLAGS=-O2 -std=c++11 -Wall -Wextra -Weffc++ -DNDEBUG
 LDFLAGS = -lsfml-system -lsfml-graphics -lsfml-window
 CXX=g++
 
