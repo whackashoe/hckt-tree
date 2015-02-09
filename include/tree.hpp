@@ -6,13 +6,16 @@
 #include <bitset>
 #include "lmemvector.hpp"
 
+namespace hckt
+{
+
 template <typename ValueType>
-class hckt_tree
+class tree
 {
 protected:
-    std::bitset<64> bitset;
-    lmemvector<ValueType> values;
-    lmemvector<hckt_tree<ValueType>*> children;
+    std::bitset<64>                    bitset;
+    hckt::lmemvector<ValueType>        values;
+    hckt::lmemvector<tree<ValueType>*> children;
 
     std::size_t get_children_position(const std::size_t position) const
     {
@@ -31,11 +34,11 @@ protected:
 
 
 public:
-    hckt_tree() : bitset { 0 }, values { }, children { }
+    tree() : bitset { 0 }, values { }, children { }
     {
     }
 
-    ~hckt_tree()
+    ~tree()
     {
         collapse();
     }
@@ -44,7 +47,7 @@ public:
     {
         std::size_t size { sizeof(bitset)
                     + sizeof(values)   + (values.capacity()   * sizeof(ValueType))
-                    + sizeof(children) + (children.capacity() * sizeof(hckt_tree<ValueType>*))
+                    + sizeof(children) + (children.capacity() * sizeof(tree<ValueType>*))
         };
 
         for(auto child : children) {
@@ -174,7 +177,7 @@ public:
         const std::size_t cpos { get_children_position(position) };
         assert(cpos >= 0 && cpos < 64);
 
-        children.insert(cpos, new hckt_tree<ValueType>());
+        children.insert(cpos, new tree<ValueType>());
         values.insert(cpos, value);
         bitset.set(position);
     }
@@ -198,7 +201,7 @@ public:
      * get child node 
      * position should be result of get_position
      */
-    hckt_tree<ValueType> * leaf(const std::size_t position) const
+    tree<ValueType> * leaf(const std::size_t position) const
     {
         const std::size_t cpos { get_children_position(position) };
         assert(cpos >= 0 && cpos < 64);
@@ -233,5 +236,6 @@ public:
     }
 };
 
+};
 
 #endif

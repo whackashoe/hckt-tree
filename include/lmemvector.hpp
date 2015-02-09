@@ -5,8 +5,11 @@
 #include <algorithm> 
 #include <cstring>
 
-constexpr std::size_t init_capacity = 2;
-constexpr auto exp_inc = 1.5;
+namespace hckt
+{
+
+constexpr std::size_t init_capacity { 2 };
+constexpr double      exp_inc { 1.6 };
 
 #pragma pack(1)
 template <typename T>
@@ -134,6 +137,8 @@ public:
         std::memmove(it + 1, it, sizeof(T) * (_size - position - 1));
         *it = value;
     }
+};
+
 };
 
 #endif

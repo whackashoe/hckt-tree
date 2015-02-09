@@ -16,7 +16,7 @@ constexpr size_t window_height { 512 };
 
 int main()
 {
-    hckt_tree<uint32_t> m;
+    hckt::tree<uint32_t> m;
     populate(m, 6);
     std::cout << m.calculate_memory_size() << std::endl;
 
