@@ -23,5 +23,5 @@ int main(int argc, char ** argv)
     sf::RenderWindow window{{window_width, window_height}, "hckt-tree"};
     window.clear(sf::Color { 255, 255, 255, 255 } );
 
-    return zoom_render(window, m, 1.1);
+    return zoom_render(window, m, 1.06);
 }
