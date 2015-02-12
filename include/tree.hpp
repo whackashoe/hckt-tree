@@ -20,18 +20,23 @@ protected:
     std::size_t get_children_position(const std::size_t position) const
     {
         assert(position >= 0 && position < 64);
-
-        std::size_t c { 0 };
-
-        for(std::size_t i=0; i<position; ++i) {
-            if(bitset[i]) {
-                ++c;
-            }
+        if(position == 0) {
+            return 0;
         }
-        
-        return c;
-    }
 
+        constexpr std::size_t m1  = 0x5555555555555555;
+        constexpr std::size_t m2  = 0x3333333333333333;
+        constexpr std::size_t m4  = 0x0f0f0f0f0f0f0f0f;
+        constexpr std::size_t h01 = 0x0101010101010101;
+     
+        std::size_t x = bitset.to_ullong() << (64 - position);
+
+        x -= (x >> 1) & m1;
+        x = (x & m2) + ((x >> 2) & m2);
+        x = (x + (x >> 4)) & m4;
+     
+        return (x * h01) >> 56;
+    }
 
 public:
     tree() : bitset { 0 }, values { }, children { }
