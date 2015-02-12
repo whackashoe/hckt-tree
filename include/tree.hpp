@@ -55,14 +55,6 @@ protected:
         //popcount / dont worry just believe
         std::uint64_t x = bitset.to_ullong() << (64 - position);
 
-#ifdef HCKT_SPARSE
-        std::uint64_t count;
-        for(count=0; x; ++count) {
-            x &= x-1;
-        }
-
-        return count;
-#else
         constexpr std::uint64_t m1  = 0x5555555555555555;
         constexpr std::uint64_t m2  = 0x3333333333333333;
         constexpr std::uint64_t m4  = 0x0f0f0f0f0f0f0f0f;
@@ -73,7 +65,6 @@ protected:
         x = (x + (x >> 4)) & m4;
      
         return (x * h01) >> 56;
-#endif
     }
 
 public:
