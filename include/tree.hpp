@@ -92,6 +92,17 @@ public:
         return size;
     }
 
+    std::size_t calculate_children_amount() const
+    {
+        std::size_t amount { bitset.count() };
+
+        for(auto child : children) {
+            amount += child->calculate_children_amount();
+        }
+        
+        return amount;
+    }
+
 
     /*
      * 2d get position
