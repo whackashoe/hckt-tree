@@ -20,22 +20,36 @@ protected:
     std::size_t get_children_position(const std::size_t position) const
     {
         assert(position >= 0 && position < 64);
+
+        //lets avoid this.. we know it will be 0 regardless of ones set
+        //plus we'll just have extra complexity lower down because 
+        //we can only shift by < width
         if(position == 0) {
             return 0;
         }
 
-        constexpr std::size_t m1  = 0x5555555555555555;
-        constexpr std::size_t m2  = 0x3333333333333333;
-        constexpr std::size_t m4  = 0x0f0f0f0f0f0f0f0f;
-        constexpr std::size_t h01 = 0x0101010101010101;
-     
-        std::size_t x = bitset.to_ullong() << (64 - position);
+        //popcount / dont worry just believe
+        std::uint64_t x = bitset.to_ullong() << (64 - position);
+
+#ifdef HCKT_SPARSE
+        std::uint64_t count;
+        for(count=0; x; ++count) {
+            x &= x-1;
+        }
+
+        return count;
+#else
+        constexpr std::uint64_t m1  = 0x5555555555555555;
+        constexpr std::uint64_t m2  = 0x3333333333333333;
+        constexpr std::uint64_t m4  = 0x0f0f0f0f0f0f0f0f;
+        constexpr std::uint64_t h01 = 0x0101010101010101;
 
         x -= (x >> 1) & m1;
         x = (x & m2) + ((x >> 2) & m2);
         x = (x + (x >> 4)) & m4;
      
         return (x * h01) >> 56;
+#endif
     }
 
 public:
