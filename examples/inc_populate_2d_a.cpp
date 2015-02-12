@@ -13,7 +13,7 @@ void recursive_populate(Tree * m, const int depth, const int max_depth)
                 m->insert(pos, alg);
 
                 if(alg % 7 == 1) { 
-                    recursive_populate(m->leaf(pos), depth + 1, max_depth);
+                    recursive_populate(m->child(pos), depth + 1, max_depth);
                 }
             }
         }

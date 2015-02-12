@@ -28,7 +28,7 @@ void recursive_render(sf::RenderWindow & window, Tree * m, const double rsize, c
                     window.draw(square);
                 }
 
-                recursive_render(window, m->leaf(pos), rsize / 8.0f, ox, oy);
+                recursive_render(window, m->child(pos), rsize / 8.0f, ox, oy);
             }
         }
     }

@@ -245,7 +245,7 @@ public:
      * get child node 
      * position should be result of get_position
      */
-    tree<ValueType> * leaf(const std::size_t position) const
+    tree<ValueType> * child(const std::size_t position) const
     {
         const std::size_t cpos { get_children_position(position) };
         assert(cpos >= 0 && cpos < 64);
