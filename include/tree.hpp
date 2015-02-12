@@ -88,9 +88,10 @@ public:
     
     std::size_t calculate_memory_size() const
     {
-        std::size_t size { sizeof(bitset)
-                    + sizeof(values)   + (values.capacity()   * sizeof(ValueType))
-                    + sizeof(children) + (children.capacity() * sizeof(tree<ValueType>*))
+        std::size_t size { 
+              sizeof(bitset)
+            + sizeof(values)   + (values.capacity()   * sizeof(ValueType))
+            + sizeof(children) + (children.capacity() * sizeof(tree<ValueType>*))
         };
 
         for(auto child : children) {
