@@ -53,12 +53,12 @@ protected:
         }
 
         //popcount / dont worry just believe
-        std::uint64_t x = bitset.to_ullong() << (64 - position);
+        std::uint64_t x { bitset.to_ullong() << (64 - position) };
 
-        constexpr std::uint64_t m1  = 0x5555555555555555;
-        constexpr std::uint64_t m2  = 0x3333333333333333;
-        constexpr std::uint64_t m4  = 0x0f0f0f0f0f0f0f0f;
-        constexpr std::uint64_t h01 = 0x0101010101010101;
+        constexpr std::uint64_t m1  { 0x5555555555555555 };
+        constexpr std::uint64_t m2  { 0x3333333333333333 };
+        constexpr std::uint64_t m4  { 0x0f0f0f0f0f0f0f0f };
+        constexpr std::uint64_t h01 { 0x0101010101010101 };
 
         x -= (x >> 1) & m1;
         x = (x & m2) + ((x >> 2) & m2);
