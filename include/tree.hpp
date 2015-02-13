@@ -229,6 +229,16 @@ public:
         bitset.set(position);
     }
 
+    void insert_direct(const std::size_t position, const std::size_t cpos, const ValueType value)
+    {
+        assert(position >= 0 && position < 64);
+        assert(cpos >= 0 && cpos < 64);
+
+        children.insert(cpos, new tree<ValueType>());
+        values.insert(cpos, value);
+        bitset.set(position);
+    }
+
     /*
      * removes an item from tree
      * position should be result of get_position
@@ -238,6 +248,18 @@ public:
         assert(position >= 0 && position < 64);
 
         const std::size_t cpos { get_children_position(position) };
+
+        children[cpos]->collapse();
+        children.erase(cpos);
+        values.erase(cpos);
+        bitset.reset(position);
+    }
+
+    void remove_direct(const std::size_t position, const std::size_t cpos)
+    {
+        assert(position >= 0 && position < 64);
+        assert(cpos >= 0 && cpos < 64);
+
         children[cpos]->collapse();
         children.erase(cpos);
         values.erase(cpos);
@@ -251,10 +273,17 @@ public:
     tree<ValueType> * child(const std::size_t position) const
     {
         assert(position >= 0 && position < 64);
-        const std::size_t cpos { get_children_position(position) };
-        
+
+        return child_direct(get_children_position(position));
+    }
+
+    tree<ValueType> * child_direct(const std::size_t cpos) const
+    {
+        assert(cpos >= 0 && cpos < 64);
+
         return children[cpos];
     }
+
 
     /*
      * sets node to specific value
@@ -264,8 +293,14 @@ public:
     void set_value(const std::size_t position, const ValueType value)
     {
         assert(position >= 0 && position < 64);
-        const std::size_t cpos { get_children_position(position) };
-        
+
+        set_value_direct(get_children_position(position));
+    }
+
+    void set_value_direct(const std::size_t cpos, const ValueType value)
+    {
+        assert(cpos >= 0 && cpos < 64);
+
         values[cpos] = value;
     }
 
@@ -278,8 +313,13 @@ public:
     {
         assert(position >= 0 && position < 64);
 
-        const std::size_t cpos { get_children_position(position) };
-        
+        get_value_direct(get_children_position(position));
+    }
+
+    ValueType get_value_direct(const std::size_t cpos) const
+    {
+        assert(cpos >= 0 && cpos < 64);
+
         return values[cpos];
     }
 };
