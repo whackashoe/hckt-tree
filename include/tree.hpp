@@ -220,8 +220,9 @@ public:
      */
     void insert(const std::size_t position, const ValueType value)
     {
+        assert(position >= 0 && position < 64);
+
         const std::size_t cpos { get_children_position(position) };
-        assert(cpos >= 0 && cpos < 64);
 
         children.insert(cpos, new tree<ValueType>());
         values.insert(cpos, value);
@@ -234,9 +235,9 @@ public:
      */
     void remove(const std::size_t position)
     {
+        assert(position >= 0 && position < 64);
+
         const std::size_t cpos { get_children_position(position) };
-        assert(cpos >= 0 && cpos < 64);
-        
         children[cpos]->collapse();
         children.erase(cpos);
         values.erase(cpos);
@@ -249,8 +250,8 @@ public:
      */
     tree<ValueType> * child(const std::size_t position) const
     {
+        assert(position >= 0 && position < 64);
         const std::size_t cpos { get_children_position(position) };
-        assert(cpos >= 0 && cpos < 64);
         
         return children[cpos];
     }
@@ -262,8 +263,8 @@ public:
      */
     void set_value(const std::size_t position, const ValueType value)
     {
+        assert(position >= 0 && position < 64);
         const std::size_t cpos { get_children_position(position) };
-        assert(cpos >= 0 && cpos < 64);
         
         values[cpos] = value;
     }
@@ -275,8 +276,9 @@ public:
      */
     ValueType get_value(const std::size_t position) const
     {
+        assert(position >= 0 && position < 64);
+
         const std::size_t cpos { get_children_position(position) };
-        assert(cpos >= 0 && cpos < 64);
         
         return values[cpos];
     }
