@@ -109,6 +109,18 @@ public:
         return amount;
     }
 
+    void mem_usage_info()
+    {
+        auto memsize = calculate_memory_size();
+        auto camnt = calculate_children_amount();
+        std::cout << "total:     " << memsize << std::endl;
+        std::cout << "tree-size: " << sizeof(tree<ValueType>) << std::endl;
+        std::cout << "children:  " << camnt << std::endl;
+        std::cout << "per-child: " << (static_cast<float>(memsize) / camnt) << std::endl;
+        std::cout << "val-size:  " << sizeof(ValueType) << std::endl;
+        std::cout << "overhead:  " << (static_cast<float>(memsize - (camnt * sizeof(ValueType))) / camnt) << std::endl;
+    }
+
 
     /*
      * 2d get position
@@ -215,7 +227,7 @@ public:
 
     bool isset(const unsigned position) const
     {
-        assert(position >= 0 && position < 64);
+        assert(position < 64);
 
         return bitset[position];
     }
@@ -241,6 +253,7 @@ public:
     void insert(const unsigned position, const ValueType value)
     {
         assert(position < 64);
+        assert(! isset(position));
 
         const unsigned cpos { get_children_position(position) };
 
@@ -252,6 +265,7 @@ public:
     void insert_direct(const unsigned position, const unsigned cpos, const ValueType value)
     {
         assert(position < 64);
+        assert(! isset(position));
         assert(cpos     < 64);
 
         children.insert(cpos, new tree<ValueType>());
@@ -266,6 +280,7 @@ public:
     void remove(const unsigned position)
     {
         assert(position < 64);
+        assert(isset(position));
 
         const unsigned cpos { get_children_position(position) };
 
@@ -278,6 +293,7 @@ public:
     void remove_direct(const unsigned position, const unsigned cpos)
     {
         assert(position < 64);
+        assert(isset(position));
         assert(cpos     < 64);
 
         children[cpos]->collapse();
@@ -293,7 +309,8 @@ public:
     tree<ValueType> * child(const unsigned position) const
     {
         assert(position < 64);
-
+        assert(isset(position));
+   
         return child_direct(get_children_position(position));
     }
 
@@ -313,6 +330,7 @@ public:
     void set_value(const unsigned position, const ValueType value)
     {
         assert(position < 64);
+        assert(isset(position));
 
         set_value_direct(get_children_position(position));
     }
@@ -339,6 +357,7 @@ public:
     ValueType get_value_direct(const unsigned cpos) const
     {
         assert(cpos < 64);
+        assert(isset(cpos));
 
         return values[cpos];
     }
