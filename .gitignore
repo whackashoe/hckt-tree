@@ -1,2 +1,4 @@
 *.o
 hckt-tree
+*.swp
+**/*.swp
