@@ -200,6 +200,13 @@ public:
         return bitset.none();
     }
 
+    bool isset(const std::size_t position) const
+    {
+        assert(position >= 0 && position < 64);
+
+        return bitset[position];
+    }
+
     /*
      * destroy children
      */
