@@ -51,6 +51,24 @@ public:
         collapse();
     }
 
+    static inline std::uint64_t popcount(std::uint64_t x)
+    {
+#ifdef __SSE4_2__
+        return _popcnt64(x);
+#else
+        constexpr std::uint64_t m1  { 0x5555555555555555 };
+        constexpr std::uint64_t m2  { 0x3333333333333333 };
+        constexpr std::uint64_t m4  { 0x0f0f0f0f0f0f0f0f };
+        constexpr std::uint64_t h01 { 0x0101010101010101 };
+
+        x -= (x >> 1) & m1;
+        x  = (x & m2) + ((x >> 2) & m2);
+        x  = (x + (x >> 4)) & m4;
+     
+        return (x * h01) >> 56;
+#endif
+    }
+    
     std::size_t get_children_position(const std::size_t position) const
     {
         assert(position >= 0 && position < 64);
@@ -63,18 +81,7 @@ public:
         }
 
         //popcount / dont worry just believe
-        std::uint64_t x { bitset.to_ullong() << (64 - position) };
-
-        constexpr std::uint64_t m1  { 0x5555555555555555 };
-        constexpr std::uint64_t m2  { 0x3333333333333333 };
-        constexpr std::uint64_t m4  { 0x0f0f0f0f0f0f0f0f };
-        constexpr std::uint64_t h01 { 0x0101010101010101 };
-
-        x -= (x >> 1) & m1;
-        x  = (x & m2) + ((x >> 2) & m2);
-        x  = (x + (x >> 4)) & m4;
-     
-        return (x * h01) >> 56;
+        return popcount(bitset.to_ullong() << (64 - position));
     }
     
     std::size_t calculate_memory_size() const
