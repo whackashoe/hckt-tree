@@ -51,7 +51,8 @@ public:
         collapse();
     }
 
-    static inline std::uint64_t popcount(std::uint64_t x)
+    //counts number of set bits
+    static inline int popcount(std::uint64_t x)
     {
 #ifdef __SSE4_2__
         return _popcnt64(x);
@@ -80,7 +81,6 @@ public:
             return 0;
         }
 
-        //popcount / dont worry just believe
         return popcount(bitset.to_ullong() << (64 - position));
     }
     
@@ -101,7 +101,7 @@ public:
 
     std::size_t calculate_children_amount() const
     {
-        std::size_t amount { bitset.count() };
+        std::size_t amount { popcount(bitset.to_ullong()) };
 
         for(auto child : children) {
             amount += child->calculate_children_amount();
