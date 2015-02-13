@@ -52,7 +52,7 @@ public:
     }
 
     //counts number of set bits
-    static inline int popcount(std::uint64_t x)
+    static inline unsigned popcount(std::uint64_t x)
     {
 #ifdef __SSE4_2__
         return _popcnt64(x);
@@ -70,9 +70,9 @@ public:
 #endif
     }
     
-    std::size_t get_children_position(const std::size_t position) const
+    unsigned get_children_position(const unsigned position) const
     {
-        assert(position >= 0 && position < 64);
+        assert(position < 64);
 
         //we know it will be 0
         //plus - we cant shift by 64 without ub
@@ -119,11 +119,11 @@ public:
      * y1:x1:y2:x2:y3:x3
      *
      */
-    static std::size_t get_position_2d(const std::size_t d1, const std::size_t d2, const std::size_t d3)
+    static unsigned get_position_2d(const unsigned d1, const unsigned d2, const unsigned d3)
     {
-        assert(d1 >= 0 && d1 < 4);
-        assert(d2 >= 0 && d2 < 4);
-        assert(d3 >= 0 && d3 < 4);
+        assert(d1 < 4);
+        assert(d2 < 4);
+        assert(d3 < 4);
 
         return ((1 << 0) * ((d1 & 2) >> 1))
              + ((1 << 1) *  (d1 & 1))
@@ -133,22 +133,22 @@ public:
              + ((1 << 5) *  (d3 & 1));
     }
 
-    static std::size_t get_x_2d(const std::size_t d1, const std::size_t d2, const std::size_t d3)
+    static unsigned get_x_2d(const unsigned d1, const unsigned d2, const unsigned d3)
     {
-        assert(d1 >= 0 && d1 < 4);
-        assert(d2 >= 0 && d2 < 4);
-        assert(d3 >= 0 && d3 < 4);
+        assert(d1 < 4);
+        assert(d2 < 4);
+        assert(d3 < 4);
 
         return ((d1 & 1) << 0)
              + ((d2 & 1) << 1)
              + ((d3 & 1) << 2);
     }
 
-    static std::size_t get_y_2d(const std::size_t d1, const std::size_t d2, const std::size_t d3)
+    static unsigned get_y_2d(const unsigned d1, const unsigned d2, const unsigned d3)
     {
-        assert(d1 >= 0 && d1 < 4);
-        assert(d2 >= 0 && d2 < 4);
-        assert(d3 >= 0 && d3 < 4);
+        assert(d1 < 4);
+        assert(d2 < 4);
+        assert(d3 < 4);
 
         return ((d1 & 2) >> 1 << 0)
              + ((d2 & 2) >> 1 << 1)
@@ -164,10 +164,10 @@ public:
      * z1:y1:x1:z2:y2:x2
      *
      */
-    static std::size_t get_position_3d(const std::size_t d1, const std::size_t d2)
+    static unsigned get_position_3d(const unsigned d1, const unsigned d2)
     {
-        assert(d1 >= 0 && d1 < 8);
-        assert(d2 >= 0 && d2 < 8);
+        assert(d1 < 8);
+        assert(d2 < 8);
 
         return ((1 << 0) * ((d1 & 4) >> 2))
              + ((1 << 1) * ((d1 & 2) >> 1))
@@ -177,28 +177,28 @@ public:
              + ((1 << 5) *  (d2 & 1));
     }
 
-    static std::size_t get_x_3d(const std::size_t d1, const std::size_t d2)
+    static unsigned get_x_3d(const unsigned d1, const unsigned d2)
     {
-        assert(d1 >= 0 && d1 < 8);
-        assert(d2 >= 0 && d2 < 8);
+        assert(d1 < 8);
+        assert(d2 < 8);
 
         return ((d1 & 1) << 0)
              + ((d2 & 1) << 1);
     }
 
-    static std::size_t get_y_3d(const std::size_t d1, const std::size_t d2)
+    static unsigned get_y_3d(const unsigned d1, const unsigned d2)
     {
-        assert(d1 >= 0 && d1 < 8);
-        assert(d2 >= 0 && d2 < 8);
+        assert(d1 < 8);
+        assert(d2 < 8);
 
         return ((d1 & 2) >> 1 << 0)
              + ((d2 & 2) >> 1 << 1);
     }
 
-    static std::size_t get_z_3d(const std::size_t d1, const std::size_t d2)
+    static unsigned get_z_3d(const unsigned d1, const unsigned d2)
     {
-        assert(d1 >= 0 && d1 < 8);
-        assert(d2 >= 0 && d2 < 8);
+        assert(d1 < 8);
+        assert(d2 < 8);
 
         return ((d1 & 4) >> 2 << 0)
              + ((d2 & 4) >> 2 << 1);
@@ -213,7 +213,7 @@ public:
         return bitset.none();
     }
 
-    bool isset(const std::size_t position) const
+    bool isset(const unsigned position) const
     {
         assert(position >= 0 && position < 64);
 
@@ -235,24 +235,24 @@ public:
     }
 
     /*
-     * insert an item into position of tree
+     * insert an item unsignedo position of tree
      * position should be result of get_position
      */
-    void insert(const std::size_t position, const ValueType value)
+    void insert(const unsigned position, const ValueType value)
     {
-        assert(position >= 0 && position < 64);
+        assert(position < 64);
 
-        const std::size_t cpos { get_children_position(position) };
+        const unsigned cpos { get_children_position(position) };
 
         children.insert(cpos, new tree<ValueType>());
         values.insert(cpos, value);
         bitset.set(position);
     }
 
-    void insert_direct(const std::size_t position, const std::size_t cpos, const ValueType value)
+    void insert_direct(const unsigned position, const unsigned cpos, const ValueType value)
     {
-        assert(position >= 0 && position < 64);
-        assert(cpos     >= 0 && cpos     < 64);
+        assert(position < 64);
+        assert(cpos     < 64);
 
         children.insert(cpos, new tree<ValueType>());
         values.insert(cpos, value);
@@ -263,11 +263,11 @@ public:
      * removes an item from tree
      * position should be result of get_position
      */
-    void remove(const std::size_t position)
+    void remove(const unsigned position)
     {
-        assert(position >= 0 && position < 64);
+        assert(position < 64);
 
-        const std::size_t cpos { get_children_position(position) };
+        const unsigned cpos { get_children_position(position) };
 
         children[cpos]->collapse();
         children.erase(cpos);
@@ -275,10 +275,10 @@ public:
         bitset.reset(position);
     }
 
-    void remove_direct(const std::size_t position, const std::size_t cpos)
+    void remove_direct(const unsigned position, const unsigned cpos)
     {
-        assert(position >= 0 && position < 64);
-        assert(cpos     >= 0 && cpos     < 64);
+        assert(position < 64);
+        assert(cpos     < 64);
 
         children[cpos]->collapse();
         children.erase(cpos);
@@ -290,16 +290,16 @@ public:
      * get child node 
      * position should be result of get_position
      */
-    tree<ValueType> * child(const std::size_t position) const
+    tree<ValueType> * child(const unsigned position) const
     {
-        assert(position >= 0 && position < 64);
+        assert(position < 64);
 
         return child_direct(get_children_position(position));
     }
 
-    tree<ValueType> * child_direct(const std::size_t cpos) const
+    tree<ValueType> * child_direct(const unsigned cpos) const
     {
-        assert(cpos >= 0 && cpos < 64);
+        assert(cpos < 64);
 
         return children[cpos];
     }
@@ -310,16 +310,16 @@ public:
      * note: this does not check whether a value has been inserted here yet
      * position should be result of get_position
      */
-    void set_value(const std::size_t position, const ValueType value)
+    void set_value(const unsigned position, const ValueType value)
     {
-        assert(position >= 0 && position < 64);
+        assert(position < 64);
 
         set_value_direct(get_children_position(position));
     }
 
-    void set_value_direct(const std::size_t cpos, const ValueType value)
+    void set_value_direct(const unsigned cpos, const ValueType value)
     {
-        assert(cpos >= 0 && cpos < 64);
+        assert(cpos < 64);
 
         values[cpos] = value;
     }
@@ -329,16 +329,16 @@ public:
      * note: this does not check whether a value has been inserted here yet
      * position should be result of get_position
      */
-    ValueType get_value(const std::size_t position) const
+    ValueType get_value(const unsigned position) const
     {
-        assert(position >= 0 && position < 64);
+        assert(position < 64);
 
         return get_value_direct(get_children_position(position));
     }
 
-    ValueType get_value_direct(const std::size_t cpos) const
+    ValueType get_value_direct(const unsigned cpos) const
     {
-        assert(cpos >= 0 && cpos < 64);
+        assert(cpos < 64);
 
         return values[cpos];
     }
