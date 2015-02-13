@@ -74,9 +74,8 @@ public:
     {
         assert(position >= 0 && position < 64);
 
-        //lets avoid this.. we know it will be 0 regardless of ones set
-        //plus we'll just have extra complexity lower down because 
-        //we can only shift by < width
+        //we know it will be 0
+        //plus - we cant shift by 64 without ub
         if(position == 0) {
             return 0;
         }
@@ -140,7 +139,9 @@ public:
         assert(d2 >= 0 && d2 < 4);
         assert(d3 >= 0 && d3 < 4);
 
-        return ((d1 & 1) << 0) + ((d2 & 1) << 1) + ((d3 & 1) << 2);
+        return ((d1 & 1) << 0)
+             + ((d2 & 1) << 1)
+             + ((d3 & 1) << 2);
     }
 
     static std::size_t get_y_2d(const std::size_t d1, const std::size_t d2, const std::size_t d3)
@@ -149,7 +150,9 @@ public:
         assert(d2 >= 0 && d2 < 4);
         assert(d3 >= 0 && d3 < 4);
 
-        return ((d1 & 2) >> 1 << 0) + ((d2 & 2) >> 1 << 1) + ((d3 & 2) >> 1 << 2);
+        return ((d1 & 2) >> 1 << 0)
+             + ((d2 & 2) >> 1 << 1)
+             + ((d3 & 2) >> 1 << 2);
     }
 
     /*
@@ -179,7 +182,8 @@ public:
         assert(d1 >= 0 && d1 < 8);
         assert(d2 >= 0 && d2 < 8);
 
-        return ((d1 & 1) << 0) + ((d2 & 1) << 1);
+        return ((d1 & 1) << 0)
+             + ((d2 & 1) << 1);
     }
 
     static std::size_t get_y_3d(const std::size_t d1, const std::size_t d2)
@@ -187,7 +191,8 @@ public:
         assert(d1 >= 0 && d1 < 8);
         assert(d2 >= 0 && d2 < 8);
 
-        return ((d1 & 2) >> 1 << 0) + ((d2 & 2) >> 1 << 1);
+        return ((d1 & 2) >> 1 << 0)
+             + ((d2 & 2) >> 1 << 1);
     }
 
     static std::size_t get_z_3d(const std::size_t d1, const std::size_t d2)
@@ -195,7 +200,8 @@ public:
         assert(d1 >= 0 && d1 < 8);
         assert(d2 >= 0 && d2 < 8);
 
-        return ((d1 & 4) >> 2 << 0) + ((d2 & 4) >> 2 << 1);
+        return ((d1 & 4) >> 2 << 0)
+             + ((d2 & 4) >> 2 << 1);
     }
 
 
@@ -246,7 +252,7 @@ public:
     void insert_direct(const std::size_t position, const std::size_t cpos, const ValueType value)
     {
         assert(position >= 0 && position < 64);
-        assert(cpos >= 0 && cpos < 64);
+        assert(cpos     >= 0 && cpos     < 64);
 
         children.insert(cpos, new tree<ValueType>());
         values.insert(cpos, value);
@@ -272,7 +278,7 @@ public:
     void remove_direct(const std::size_t position, const std::size_t cpos)
     {
         assert(position >= 0 && position < 64);
-        assert(cpos >= 0 && cpos < 64);
+        assert(cpos     >= 0 && cpos     < 64);
 
         children[cpos]->collapse();
         children.erase(cpos);
