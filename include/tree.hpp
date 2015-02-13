@@ -37,7 +37,7 @@ template <typename ValueType>
 class tree
 {
 protected:
-    std::bitset<64>                    bitset;
+    std::uint64_t                      bitset;
     hckt::lmemvector<ValueType>        values;
     hckt::lmemvector<tree<ValueType>*> children;
 
@@ -81,7 +81,7 @@ public:
         }
 
         //popcount / dont worry just believe
-        return popcount(bitset.to_ullong() << (64 - position));
+        return popcount(bitset << (64 - position));
     }
     
     std::size_t calculate_memory_size() const
@@ -101,7 +101,7 @@ public:
 
     std::size_t calculate_children_amount() const
     {
-        std::size_t amount { bitset.count() };
+        std::size_t amount { popcount(bitset) };
 
         for(auto child : children) {
             amount += child->calculate_children_amount();
@@ -204,14 +204,14 @@ public:
      */
     bool empty() const
     {
-        return bitset.none();
+        return bitset == 0;
     }
 
     bool isset(const std::size_t position) const
     {
         assert(position >= 0 && position < 64);
 
-        return bitset[position];
+        return bitset & (1 << position);
     }
 
     /*
@@ -225,7 +225,7 @@ public:
 
         children.clear();
         values.clear();
-        bitset.reset();
+        bitset = 0;
     }
 
     /*
@@ -235,22 +235,24 @@ public:
     void insert(const std::size_t position, const ValueType value)
     {
         assert(position >= 0 && position < 64);
+        assert(bitset & (1 << position) == 0);
 
         const std::size_t cpos { get_children_position(position) };
 
         children.insert(cpos, new tree<ValueType>());
         values.insert(cpos, value);
-        bitset.set(position);
+        bitset |= (1 << position);
     }
 
     void insert_direct(const std::size_t position, const std::size_t cpos, const ValueType value)
     {
         assert(position >= 0 && position < 64);
         assert(cpos >= 0 && cpos < 64);
+        assert(bitset & (1 << position) == 0);
 
         children.insert(cpos, new tree<ValueType>());
         values.insert(cpos, value);
-        bitset.set(position);
+        bitset |= (1 << position);
     }
 
     /*
@@ -266,7 +268,7 @@ public:
         children[cpos]->collapse();
         children.erase(cpos);
         values.erase(cpos);
-        bitset.reset(position);
+        bitset &= (~(1 << position));
     }
 
     void remove_direct(const std::size_t position, const std::size_t cpos)
@@ -277,7 +279,7 @@ public:
         children[cpos]->collapse();
         children.erase(cpos);
         values.erase(cpos);
-        bitset.reset(position);
+        bitset &= (~(1 << position));
     }
 
     /*
