@@ -17,7 +17,7 @@ int main()
 {
     hckt::tree<uint32_t> m;
     populate(m, 5);
-    std::cout << m.calculate_memory_size() << std::endl;
+    m.mem_usage_info();
 
     sf::RenderWindow window{{window_width, window_height}, "hckt-tree"};
     window.clear(sf::Color { 255, 255, 255, 255 } );
