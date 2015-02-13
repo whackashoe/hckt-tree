@@ -320,7 +320,7 @@ public:
     {
         assert(position >= 0 && position < 64);
 
-        get_value_direct(get_children_position(position));
+        return get_value_direct(get_children_position(position));
     }
 
     ValueType get_value_direct(const std::size_t cpos) const
