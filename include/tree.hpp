@@ -41,6 +41,16 @@ protected:
     hckt::lmemvector<ValueType>        values;
     hckt::lmemvector<tree<ValueType>*> children;
 
+public:
+    tree() : bitset { 0 }, values { }, children { }
+    {
+    }
+
+    ~tree()
+    {
+        collapse();
+    }
+
     std::size_t get_children_position(const std::size_t position) const
     {
         assert(position >= 0 && position < 64);
@@ -61,20 +71,10 @@ protected:
         constexpr std::uint64_t h01 { 0x0101010101010101 };
 
         x -= (x >> 1) & m1;
-        x = (x & m2) + ((x >> 2) & m2);
-        x = (x + (x >> 4)) & m4;
+        x  = (x & m2) + ((x >> 2) & m2);
+        x  = (x + (x >> 4)) & m4;
      
         return (x * h01) >> 56;
-    }
-
-public:
-    tree() : bitset { 0 }, values { }, children { }
-    {
-    }
-
-    ~tree()
-    {
-        collapse();
     }
     
     std::size_t calculate_memory_size() const
