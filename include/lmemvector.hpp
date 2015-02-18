@@ -32,8 +32,8 @@
 namespace hckt
 {
 
-constexpr std::size_t init_capacity { 2 };
-constexpr double      exp_inc { 1.6 };
+constexpr std::size_t init_capacity { 1 };
+constexpr double      exp_inc { 1.25 };
 
 #pragma pack(1)
 template <typename T>
@@ -151,7 +151,7 @@ public:
         ++_size;
         if(_size >= _capacity) {
             if(_capacity > 0) {
-                reserve(_capacity * exp_inc);
+                reserve(1 + (_capacity * exp_inc));
             } else {
                 init();
             }
