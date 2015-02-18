@@ -90,9 +90,9 @@ public:
     /*
      * check if we have any children
      */
-    bool empty() const
+    bool has_children() const
     {
-        return bitset.none();
+            return bitset.any();
     }
 
     bool is_set(const unsigned position) const

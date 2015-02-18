@@ -10,7 +10,7 @@ void recursive_render(sf::RenderWindow & window, Tree * m, const double rsize, c
         return;
     }
 
-    if(m->empty()) {
+    if(! m->has_children()) {
         return;
     }
 
