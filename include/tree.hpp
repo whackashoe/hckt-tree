@@ -3,7 +3,7 @@
  *
  * Copyright (c) 2015 Jett
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
@@ -70,11 +70,11 @@ public:
         x -= (x >> 1) & m1;
         x  = (x & m2) + ((x >> 2) & m2);
         x  = (x + (x >> 4)) & m4;
-     
+
         return (x * h01) >> 56;
 #endif
     }
-    
+
     unsigned get_children_position(const unsigned position) const
     {
         assert(position < 64);
@@ -92,7 +92,7 @@ public:
      */
     bool has_children() const
     {
-            return bitset.any();
+        return bitset.any();
     }
 
     bool is_set(const unsigned position) const
@@ -173,7 +173,7 @@ public:
     }
 
     /*
-     * get child node 
+     * get child node
      * position should be result of get_position
      */
     tree<value_type> * child(const unsigned position) const
@@ -181,7 +181,7 @@ public:
         assert(position < 64);
         assert(is_set(position));
         assert(! is_leaf(position));
-   
+
         const unsigned cpos { get_children_position(position) };
 
         return children[cpos];
@@ -225,7 +225,7 @@ public:
 
     std::size_t calculate_memory_size() const
     {
-        std::size_t size { 
+        std::size_t size {
               sizeof(bitset)
             + sizeof(leaf)
             + sizeof(values)   + (values.capacity()   * sizeof(value_type))
@@ -235,7 +235,7 @@ public:
         for(auto child : children) {
             size += child->calculate_memory_size();
         }
-        
+
         return size;
     }
 
@@ -246,7 +246,7 @@ public:
         for(auto child : children) {
             amount += child->calculate_children_amount();
         }
-        
+
         return amount;
     }
 
@@ -257,7 +257,7 @@ public:
         for(auto child : children) {
             amount += child->calculate_leaf_amount();
         }
-        
+
         return amount;
     }
 

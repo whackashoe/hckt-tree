@@ -13,7 +13,7 @@ void recursive_populate(Tree * m, const int depth, const int max_depth)
                 const auto pos = hckt::get_position_2d(a, b, c);
                 m->insert(pos, 8 + rand() % 8);
 
-                if(pos == 0) { 
+                if(pos == 0) {
                     recursive_populate(m->child(pos), depth + 1, max_depth);
                 }
             }
