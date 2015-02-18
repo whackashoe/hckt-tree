@@ -33,16 +33,19 @@
 namespace hckt
 {
 
-template <typename ValueType>
+template <typename T>
 class tree
 {
+typedef T value_type;
+
 protected:
-    std::bitset<64>                    bitset;
-    std::bitset<64>                    leaf;
-    hckt::lmemvector<ValueType>        values;
-    hckt::lmemvector<tree<ValueType>*> children;
+    std::bitset<64>                     bitset;
+    std::bitset<64>                     leaf;
+    hckt::lmemvector<value_type>        values;
+    hckt::lmemvector<tree<value_type>*> children;
 
 public:
+
     tree() : bitset { 0 }, leaf { 0 }, values { }, children { }
     {
     }
@@ -87,8 +90,8 @@ public:
         std::size_t size { 
               sizeof(bitset)
             + sizeof(leaf)
-            + sizeof(values)   + (values.capacity()   * sizeof(ValueType))
-            + sizeof(children) + (children.capacity() * sizeof(tree<ValueType>*))
+            + sizeof(values)   + (values.capacity()   * sizeof(value_type))
+            + sizeof(children) + (children.capacity() * sizeof(tree<value_type>*))
         };
 
         for(auto child : children) {
@@ -127,12 +130,12 @@ public:
         auto l_amnt = calculate_leaf_amount();
 
         std::cout << "total:     " << memsize << std::endl;
-        std::cout << "tree-size: " << sizeof(tree<ValueType>) << std::endl;
+        std::cout << "tree-size: " << sizeof(tree<value_type>) << std::endl;
         std::cout << "children:  " << c_amnt << std::endl;
         std::cout << "leaves:    " << l_amnt << std::endl;
         std::cout << "per-child: " << (static_cast<float>(memsize) / c_amnt) << std::endl;
-        std::cout << "val-size:  " << sizeof(ValueType) << std::endl;
-        std::cout << "overhead:  " << (static_cast<float>(memsize - (c_amnt * sizeof(ValueType))) / c_amnt) << std::endl;
+        std::cout << "val-size:  " << sizeof(value_type) << std::endl;
+        std::cout << "overhead:  " << (static_cast<float>(memsize - (c_amnt * sizeof(value_type))) / c_amnt) << std::endl;
     }
 
 
@@ -176,14 +179,14 @@ public:
      * insert a tree into position of tree
      * position should be result of get_position
      */
-    void insert(const unsigned position, const ValueType value)
+    void insert(const unsigned position, const value_type value)
     {
         assert(position < 64);
         assert(! is_set(position));
 
         const unsigned cpos { get_children_position(position) };
 
-        children.insert(cpos, new tree<ValueType>());
+        children.insert(cpos, new tree<value_type>());
         values.insert(cpos, value);
         bitset.set(position);
         leaf.reset(position);
@@ -193,7 +196,7 @@ public:
      * insert a leaf into position of tree
      * position should be result of get_position
      */
-    void insert_leaf(const unsigned position, const ValueType value)
+    void insert_leaf(const unsigned position, const value_type value)
     {
         assert(position < 64);
         assert(! is_set(position));
@@ -227,7 +230,7 @@ public:
      * get child node 
      * position should be result of get_position
      */
-    tree<ValueType> * child(const unsigned position) const
+    tree<value_type> * child(const unsigned position) const
     {
         assert(position < 64);
         assert(is_set(position));
@@ -243,7 +246,7 @@ public:
      * note: this does not check whether a value has been inserted here yet
      * position should be result of get_position
      */
-    void set_value(const unsigned position, const ValueType value)
+    void set_value(const unsigned position, const value_type value)
     {
         assert(position < 64);
         assert(is_set(position));
@@ -258,7 +261,7 @@ public:
      * note: this does not check whether a value has been inserted here yet
      * position should be result of get_position
      */
-    ValueType get_value(const unsigned position) const
+    value_type get_value(const unsigned position) const
     {
         assert(position < 64);
 
