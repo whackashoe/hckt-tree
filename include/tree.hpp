@@ -109,16 +109,30 @@ public:
         return amount;
     }
 
+    std::size_t calculate_leaf_amount() const
+    {
+        std::size_t amount { popcount(leaf.to_ullong()) };
+
+        for(auto child : children) {
+            amount += child->calculate_leaf_amount();
+        }
+        
+        return amount;
+    }
+
     void mem_usage_info()
     {
         auto memsize = calculate_memory_size();
-        auto camnt = calculate_children_amount();
+        auto c_amnt = calculate_children_amount();
+        auto l_amnt = calculate_leaf_amount();
+
         std::cout << "total:     " << memsize << std::endl;
         std::cout << "tree-size: " << sizeof(tree<ValueType>) << std::endl;
-        std::cout << "children:  " << camnt << std::endl;
-        std::cout << "per-child: " << (static_cast<float>(memsize) / camnt) << std::endl;
+        std::cout << "children:  " << c_amnt << std::endl;
+        std::cout << "leaves:    " << l_amnt << std::endl;
+        std::cout << "per-child: " << (static_cast<float>(memsize) / c_amnt) << std::endl;
         std::cout << "val-size:  " << sizeof(ValueType) << std::endl;
-        std::cout << "overhead:  " << (static_cast<float>(memsize - (camnt * sizeof(ValueType))) / camnt) << std::endl;
+        std::cout << "overhead:  " << (static_cast<float>(memsize - (c_amnt * sizeof(ValueType))) / c_amnt) << std::endl;
     }
 
 
