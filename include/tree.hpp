@@ -269,17 +269,6 @@ public:
         bitset.set(position);
     }
 
-    void insert_direct(const unsigned position, const unsigned cpos, const ValueType value)
-    {
-        assert(position < 64);
-        assert(! isset(position));
-        assert(cpos     < 64);
-
-        children.insert(cpos, new tree<ValueType>());
-        values.insert(cpos, value);
-        bitset.set(position);
-    }
-
     /*
      * removes an item from tree
      * position should be result of get_position
@@ -297,18 +286,6 @@ public:
         bitset.reset(position);
     }
 
-    void remove_direct(const unsigned position, const unsigned cpos)
-    {
-        assert(position < 64);
-        assert(isset(position));
-        assert(cpos     < 64);
-
-        children[cpos]->collapse();
-        children.erase(cpos);
-        values.erase(cpos);
-        bitset.reset(position);
-    }
-
     /*
      * get child node 
      * position should be result of get_position
@@ -318,16 +295,10 @@ public:
         assert(position < 64);
         assert(is_set(position));
    
-        return child_direct(get_children_position(position));
-    }
-
-    tree<ValueType> * child_direct(const unsigned cpos) const
-    {
-        assert(cpos < 64);
+        const unsigned cpos { get_children_position(position) };
 
         return children[cpos];
     }
-
 
     /*
      * sets node to specific value
@@ -339,12 +310,7 @@ public:
         assert(position < 64);
         assert(is_set(position));
 
-        set_value_direct(get_children_position(position));
-    }
-
-    void set_value_direct(const unsigned cpos, const ValueType value)
-    {
-        assert(cpos < 64);
+        const unsigned cpos { get_children_position(position) };
 
         values[cpos] = value;
     }
@@ -358,13 +324,7 @@ public:
     {
         assert(position < 64);
 
-        return get_value_direct(get_children_position(position));
-    }
-
-    ValueType get_value_direct(const unsigned cpos) const
-    {
-        assert(cpos < 64);
-        assert(isset(cpos));
+        const unsigned cpos { get_children_position(position) };
 
         return values[cpos];
     }
