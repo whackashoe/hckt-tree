@@ -1,3 +1,5 @@
+#include <hckt/util.hpp>
+
 template <typename Tree>
 void recursive_render(sf::RenderWindow & window, Tree * m, const double rsize, const float offset_x, const float offset_y)
 {
@@ -16,9 +18,9 @@ void recursive_render(sf::RenderWindow & window, Tree * m, const double rsize, c
     for(size_t a=0; a<4; ++a) {
         for(size_t b=0; b<4; ++b) {
             for(size_t c=0; c<4; ++c) {
-                const auto pos   = Tree::get_position_2d(a, b, c);
-                const auto ox    = offset_x + (rsize * Tree::get_x_2d(a, b, c));
-                const auto oy    = offset_y + (rsize * Tree::get_y_2d(a, b, c));
+                const auto pos   = hckt::get_position_2d(a, b, c);
+                const auto ox    = offset_x + (rsize * hckt::get_x_2d(a, b, c));
+                const auto oy    = offset_y + (rsize * hckt::get_y_2d(a, b, c));
                 const sf::Uint8 col = m->get_value(pos) * (255 / (4 * 4 * 4));
 
                 if(rsize < window_width) {
