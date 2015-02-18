@@ -227,10 +227,9 @@ public:
         return bitset.none();
     }
 
-    bool isset(const unsigned position) const
+    bool is_set(const unsigned position) const
     {
         assert(position < 64);
-
         return bitset[position];
     }
 
@@ -255,13 +254,13 @@ public:
     }
 
     /*
-     * insert an item unsignedo position of tree
+     * insert an item into position of tree
      * position should be result of get_position
      */
     void insert(const unsigned position, const ValueType value)
     {
         assert(position < 64);
-        assert(! isset(position));
+        assert(! is_set(position));
 
         const unsigned cpos { get_children_position(position) };
 
@@ -288,7 +287,7 @@ public:
     void remove(const unsigned position)
     {
         assert(position < 64);
-        assert(isset(position));
+        assert(is_set(position));
 
         const unsigned cpos { get_children_position(position) };
 
@@ -317,7 +316,7 @@ public:
     tree<ValueType> * child(const unsigned position) const
     {
         assert(position < 64);
-        assert(isset(position));
+        assert(is_set(position));
    
         return child_direct(get_children_position(position));
     }
@@ -338,7 +337,7 @@ public:
     void set_value(const unsigned position, const ValueType value)
     {
         assert(position < 64);
-        assert(isset(position));
+        assert(is_set(position));
 
         set_value_direct(get_children_position(position));
     }
