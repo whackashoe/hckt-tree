@@ -38,7 +38,6 @@ template <typename T>
 class tree
 {
 typedef T value_type;
-friend class bench;
 
 protected:
     std::bitset<64>                     bitset;
