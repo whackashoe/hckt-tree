@@ -37,6 +37,7 @@ template <typename T>
 class tree
 {
 typedef T value_type;
+friend class bench;
 
 protected:
     std::bitset<64>                     bitset;
@@ -84,61 +85,6 @@ public:
 
         return popcount((bitset.to_ullong() & ~leaf.to_ullong()) << (64 - position));
     }
-
-    std::size_t calculate_memory_size() const
-    {
-        std::size_t size { 
-              sizeof(bitset)
-            + sizeof(leaf)
-            + sizeof(values)   + (values.capacity()   * sizeof(value_type))
-            + sizeof(children) + (children.capacity() * sizeof(tree<value_type>*))
-        };
-
-        for(auto child : children) {
-            size += child->calculate_memory_size();
-        }
-        
-        return size;
-    }
-
-    std::size_t calculate_children_amount() const
-    {
-        std::size_t amount { popcount(bitset.to_ullong()) };
-
-        for(auto child : children) {
-            amount += child->calculate_children_amount();
-        }
-        
-        return amount;
-    }
-
-    std::size_t calculate_leaf_amount() const
-    {
-        std::size_t amount { popcount(leaf.to_ullong()) };
-
-        for(auto child : children) {
-            amount += child->calculate_leaf_amount();
-        }
-        
-        return amount;
-    }
-
-    void mem_usage_info()
-    {
-        auto memsize = calculate_memory_size();
-        auto c_amnt = calculate_children_amount();
-        auto l_amnt = calculate_leaf_amount();
-
-        std::cout << "total:     " << memsize << std::endl;
-        std::cout << "tree-size: " << sizeof(tree<value_type>) << std::endl;
-        std::cout << "children:  " << c_amnt << std::endl;
-        std::cout << "leaves:    " << l_amnt << std::endl;
-        std::cout << "per-child: " << (static_cast<float>(memsize) / c_amnt) << std::endl;
-        std::cout << "val-size:  " << sizeof(value_type) << std::endl;
-        std::cout << "overhead:  " << (static_cast<float>(memsize - (c_amnt * sizeof(value_type))) / c_amnt) << std::endl;
-    }
-
-
 
 
     /*

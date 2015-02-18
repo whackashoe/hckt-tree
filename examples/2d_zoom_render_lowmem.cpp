@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include <hckt/tree.hpp>
+#include <hckt/bench.hpp>
 #include <hckt/lmemvector.hpp>
 
 constexpr size_t window_width  { 512 };
@@ -17,7 +18,7 @@ int main()
 {
     hckt::tree<uint32_t> m;
     populate(m, 5);
-    m.mem_usage_info();
+    hckt::bench::mem_usage_info(&m);
 
     sf::RenderWindow window{{window_width, window_height}, "hckt-tree"};
     window.clear(sf::Color { 255, 255, 255, 255 } );
