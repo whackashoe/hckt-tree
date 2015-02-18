@@ -75,13 +75,22 @@ public:
     {
         assert(position < 64);
 
-        //we know it will be 0
-        //plus - we cant shift by 64 without ub
         if(position == 0) {
             return 0;
         }
 
-        return popcount(bitset.to_ullong() << (64 - position));
+        return popcount((bitset.to_ullong() & ~leaf.to_ullong()) << (64 - position));
+    }
+
+    unsigned get_value_position(const unsigned position) const
+    {
+        assert(position < 64);
+
+        if(position == 0) {
+            return 0;
+        }
+
+        return popcount((bitset.to_ullong() & ~leaf.to_ullong()) << (64 - position));
     }
     
     std::size_t calculate_memory_size() const
@@ -254,7 +263,7 @@ public:
     }
 
     /*
-     * insert an item into position of tree
+     * insert a tree into position of tree
      * position should be result of get_position
      */
     void insert(const unsigned position, const ValueType value)
@@ -267,6 +276,23 @@ public:
         children.insert(cpos, new tree<ValueType>());
         values.insert(cpos, value);
         bitset.set(position);
+        leaf.reset(position);
+    }
+
+    /*
+     * insert a leaf into position of tree
+     * position should be result of get_position
+     */
+    void insert_leaf(const unsigned position, const ValueType value)
+    {
+        assert(position < 64);
+        assert(! is_set(position));
+
+        const unsigned cpos { get_children_position(position) };
+
+        values.insert(cpos, value);
+        bitset.set(position);
+        leaf.set(position);
     }
 
     /*
@@ -277,6 +303,7 @@ public:
     {
         assert(position < 64);
         assert(is_set(position));
+        assert(! is_leaf(position));
 
         const unsigned cpos { get_children_position(position) };
 
@@ -294,6 +321,7 @@ public:
     {
         assert(position < 64);
         assert(is_set(position));
+        assert(! is_leaf(position));
    
         const unsigned cpos { get_children_position(position) };
 
