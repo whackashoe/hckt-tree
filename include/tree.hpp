@@ -82,17 +82,6 @@ public:
         return popcount((bitset.to_ullong() & ~leaf.to_ullong()) << (64 - position));
     }
 
-    unsigned get_value_position(const unsigned position) const
-    {
-        assert(position < 64);
-
-        if(position == 0) {
-            return 0;
-        }
-
-        return popcount((bitset.to_ullong() & ~leaf.to_ullong()) << (64 - position));
-    }
-    
     std::size_t calculate_memory_size() const
     {
         std::size_t size { 
