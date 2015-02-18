@@ -10,7 +10,7 @@ install:
 	sudo cp include/*.hpp /usr/local/include/hckt
 	@echo Installed
 
-examples: 2d_zoom_render 2d_zoom_render_lowmem 2d_zoom_render_deep_sparse
+examples: 2d_zoom_render 2d_zoom_render_lowmem 2d_zoom_render_deep_sparse benchmark
 	@echo examples built
 
 2d_zoom_render: examples/2d_zoom_render.cpp
@@ -25,5 +25,9 @@ examples: 2d_zoom_render 2d_zoom_render_lowmem 2d_zoom_render_deep_sparse
 	@$(CXX) $(CXXFLAGS) -o examples/2d_zoom_render_deep_sparse examples/2d_zoom_render_deep_sparse.cpp $(LDFLAGS)
 	@echo 2d_zoom_render_deep_sparse built
 
+benchmark: examples/benchmark.cpp
+	@$(CXX) $(CXXFLAGS) -o examples/benchmark examples/benchmark.cpp $(LDFLAGS)
+	@echo benchmark built
+
 clean:
-	rm examples/2d_zoom_render examples/2d_zoom_render_lowmem examples/2d_zoom_render_deep_sparse
+	rm examples/2d_zoom_render examples/2d_zoom_render_lowmem examples/2d_zoom_render_deep_sparse examples/benchmark

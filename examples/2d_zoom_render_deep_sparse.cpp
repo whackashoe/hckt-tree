@@ -1,8 +1,3 @@
-#include <iostream>
-#include <bitset>
-#include <SFML/Window.hpp>
-#include <SFML/Graphics.hpp>
-#include <SFML/System.hpp>
 #include <hckt/tree.hpp>
 #include <hckt/bench.hpp>
 #include <hckt/lmemvector.hpp>

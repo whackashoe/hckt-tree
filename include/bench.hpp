@@ -2,6 +2,7 @@
 #define HCKT_BENCH_H
 
 #include <cstdint>
+#include <iostream>
 
 namespace hckt
 {

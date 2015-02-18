@@ -1,3 +1,6 @@
+#include <SFML/Window.hpp>
+#include <SFML/Graphics.hpp>
+#include <SFML/System.hpp>
 #include <hckt/util.hpp>
 
 template <typename Tree>
