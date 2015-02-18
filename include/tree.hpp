@@ -38,11 +38,12 @@ class tree
 {
 protected:
     std::bitset<64>                    bitset;
+    std::bitset<64>                    leaf;
     hckt::lmemvector<ValueType>        values;
     hckt::lmemvector<tree<ValueType>*> children;
 
 public:
-    tree() : bitset { 0 }, values { }, children { }
+    tree() : bitset { 0 }, leaf { 0 }, values { }, children { }
     {
     }
 
@@ -87,6 +88,7 @@ public:
     {
         std::size_t size { 
               sizeof(bitset)
+            + sizeof(leaf)
             + sizeof(values)   + (values.capacity()   * sizeof(ValueType))
             + sizeof(children) + (children.capacity() * sizeof(tree<ValueType>*))
         };
@@ -230,6 +232,12 @@ public:
         assert(position < 64);
 
         return bitset[position];
+    }
+
+    bool is_leaf(const unsigned position) const
+    {
+        assert(position < 64);
+        return leaf[position];
     }
 
     /*
