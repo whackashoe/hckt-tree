@@ -1,4 +1,4 @@
-CXXFLAGS=-O2 -std=c++11 -Wall -Wextra -Weffc++ -march=native
+CXXFLAGS=-O2 -std=c++11 -Wall -Wextra -Weffc++ -march=native -g -ggdb
 LDFLAGS = -lsfml-system -lsfml-graphics -lsfml-window
 CXX=g++
 
