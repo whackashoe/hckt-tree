@@ -34,7 +34,6 @@ namespace hckt
 
 constexpr unsigned init_capacity { 1 };
 
-#pragma pack(1)
 template <typename T>
 class lmemvector
 {
