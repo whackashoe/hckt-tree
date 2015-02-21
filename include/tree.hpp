@@ -41,13 +41,13 @@ typedef T value_type;
 
 protected:
     std::bitset<64>                     bitset;
-    std::bitset<64>                     leaf;
+    std::bitset<64>                     inv_leaf;
     hckt::lmemvector<value_type>        values;
     hckt::lmemvector<tree<value_type>*> children;
 
 public:
 
-    tree() : bitset { 0 }, leaf { 0 }, values { }, children { }
+    tree() : bitset { 0 }, inv_leaf { 0xFFFFFFFFFFFFFFFF }, values { }, children { }
     {
     }
 
@@ -83,7 +83,7 @@ public:
             return 0;
         }
 
-        return popcount((bitset.to_ullong() & ~leaf.to_ullong()) << (64 - position));
+        return popcount((bitset.to_ullong() & inv_leaf.to_ullong()) << (64 - position));
     }
 
 
@@ -104,7 +104,7 @@ public:
     bool is_leaf(const unsigned position) const
     {
         assert(position < 64);
-        return leaf[position];
+        return !inv_leaf[position];
     }
 
     /*
@@ -135,7 +135,7 @@ public:
         children.insert(cpos, new tree<value_type>());
         values.insert(cpos, value);
         bitset.set(position);
-        leaf.reset(position);
+        inv_leaf.set(position);
     }
 
     /*
@@ -151,7 +151,7 @@ public:
 
         values.insert(cpos, value);
         bitset.set(position);
-        leaf.set(position);
+        inv_leaf.reset(position);
     }
 
     /*
@@ -227,7 +227,7 @@ public:
     {
         std::size_t size {
               sizeof(bitset)
-            + sizeof(leaf)
+            + sizeof(inv_leaf)
             + sizeof(values)   + (values.capacity()   * sizeof(value_type))
             + sizeof(children) + (children.capacity() * sizeof(tree<value_type>*))
         };
@@ -252,7 +252,7 @@ public:
 
     std::size_t calculate_leaf_amount() const
     {
-        std::size_t amount { popcount(leaf.to_ullong()) };
+        std::size_t amount { popcount(~inv_leaf.to_ullong()) };
 
         for(auto child : children) {
             amount += child->calculate_leaf_amount();
