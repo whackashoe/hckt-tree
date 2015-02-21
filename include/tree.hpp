@@ -40,14 +40,14 @@ class tree
 typedef T value_type;
 
 protected:
-    std::bitset<64>                     bitset;
-    std::bitset<64>                     inv_leaf;
+    std::bitset<64>                     chiset;   //is child set to this position
+    std::bitset<64>                     inv_leaf; //opposite of leaf
     hckt::lmemvector<value_type>        values;
     hckt::lmemvector<tree<value_type>*> children;
 
 public:
 
-    tree() : bitset { 0 }, inv_leaf { 0xFFFFFFFFFFFFFFFF }, values { }, children { }
+    tree() : chiset { 0 }, inv_leaf { 0xFFFFFFFFFFFFFFFF }, values { }, children { }
     {
     }
 
@@ -75,6 +75,11 @@ public:
 #endif
     }
 
+    std::uint64_t chidist() const
+    {
+        return (chiset.to_ullong() & inv_leaf.to_ullong());
+    }
+
     unsigned get_children_position(const unsigned position) const
     {
         assert(position < 64);
@@ -83,8 +88,9 @@ public:
             return 0;
         }
 
-        return popcount((bitset.to_ullong() & inv_leaf.to_ullong()) << (64 - position));
+        return popcount(chidist() << (64 - position));
     }
+    
 
 
     /*
@@ -92,13 +98,13 @@ public:
      */
     bool has_children() const
     {
-        return bitset.any();
+        return chiset.any();
     }
 
     bool is_set(const unsigned position) const
     {
         assert(position < 64);
-        return bitset[position];
+        return chiset[position];
     }
 
     bool is_leaf(const unsigned position) const
@@ -112,13 +118,14 @@ public:
      */
     void collapse()
     {
-        for(auto child : children) {
-            child->collapse();
+        auto cd = popcount(chidist());
+        for(unsigned i=0; i<cd; ++i) {
+            children[i]->collapse();
         }
 
-        children.clear();
-        values.clear();
-        bitset.reset();
+        children.clear(cd);
+        values.clear(cd);
+        chiset.reset();
     }
 
     /*
@@ -130,11 +137,12 @@ public:
         assert(position < 64);
         assert(! is_set(position));
 
-        const unsigned cpos { get_children_position(position) };
+        const auto cpos = get_children_position(position);
+        const auto cd = popcount(chidist());
 
-        children.insert(cpos, new tree<value_type>());
-        values.insert(cpos, value);
-        bitset.set(position);
+        children.insert(cpos, new tree<value_type>(), cd);
+        values.insert(cpos, value, cd);
+        chiset.set(position);
         inv_leaf.set(position);
     }
 
@@ -147,10 +155,11 @@ public:
         assert(position < 64);
         assert(! is_set(position));
 
-        const unsigned cpos { get_children_position(position) };
+        const auto cpos = get_children_position(position);
+        const auto cd = popcount(chidist());
 
-        values.insert(cpos, value);
-        bitset.set(position);
+        values.insert(cpos, value, cd);
+        chiset.set(position);
         inv_leaf.reset(position);
     }
 
@@ -164,12 +173,13 @@ public:
         assert(is_set(position));
         assert(! is_leaf(position));
 
-        const unsigned cpos { get_children_position(position) };
+        const auto cpos = get_children_position(position);
+        const auto cd = popcount(chidist());
 
         children[cpos]->collapse();
         children.erase(cpos);
         values.erase(cpos);
-        bitset.reset(position);
+        chiset.reset(position);
     }
 
     /*
@@ -225,26 +235,40 @@ public:
 
     std::size_t calculate_memory_size() const
     {
+        auto cd = popcount(chidist());
         std::size_t size {
-              sizeof(bitset)
+              sizeof(chiset)
             + sizeof(inv_leaf)
-            + sizeof(values)   + (values.capacity()   * sizeof(value_type))
-            + sizeof(children) + (children.capacity() * sizeof(tree<value_type>*))
+            + sizeof(values)   + (cd * sizeof(value_type))
+            + sizeof(children) + (cd * sizeof(tree<value_type>*))
         };
 
-        for(auto child : children) {
-            size += child->calculate_memory_size();
+        for(unsigned i=0; i<cd; ++i) {
+            size += children[i]->calculate_memory_size();
         }
 
         return size;
     }
 
+    std::size_t calculate_value_amount() const
+    {
+        std::size_t amount { popcount(chiset.to_ullong()) };
+
+        auto cd = popcount(chidist());
+        for(unsigned i=0; i<cd; ++i) {
+            amount += children[i]->calculate_value_amount();
+        }
+
+        return amount;
+    }
+
     std::size_t calculate_children_amount() const
     {
-        std::size_t amount { popcount(bitset.to_ullong()) };
+        std::size_t amount { popcount(chiset.to_ullong()) };
 
-        for(auto child : children) {
-            amount += child->calculate_children_amount();
+        auto cd = popcount(chidist());
+        for(unsigned i=0; i<cd; ++i) {
+            amount += children[i]->calculate_children_amount();
         }
 
         return amount;
@@ -254,8 +278,9 @@ public:
     {
         std::size_t amount { popcount(~inv_leaf.to_ullong()) };
 
-        for(auto child : children) {
-            amount += child->calculate_leaf_amount();
+        auto cd = popcount(chidist());
+        for(unsigned i=0; i<cd; ++i) {
+            amount += children[i]->calculate_leaf_amount();
         }
 
         return amount;
@@ -265,13 +290,15 @@ public:
     {
         auto memsize = calculate_memory_size();
         auto c_amnt = calculate_children_amount();
+        auto v_amnt = calculate_value_amount();
         auto l_amnt = calculate_leaf_amount();
 
         std::cout << "total:     " << memsize << std::endl;
         std::cout << "tree-size: " << sizeof(tree<value_type>) << std::endl;
         std::cout << "children:  " << c_amnt << std::endl;
         std::cout << "leaves:    " << l_amnt << std::endl;
-        std::cout << "per-child: " << (static_cast<float>(memsize) / c_amnt) << std::endl;
+        std::cout << "vals:      " << v_amnt << std::endl;
+        std::cout << "per-val:   " << (static_cast<float>(memsize) / c_amnt) << std::endl;
         std::cout << "val-size:  " << sizeof(value_type) << std::endl;
         std::cout << "overhead:  " << (static_cast<float>(memsize - (c_amnt * sizeof(value_type))) / c_amnt) << std::endl;
     }
