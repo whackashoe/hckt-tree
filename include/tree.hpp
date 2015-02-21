@@ -128,7 +128,8 @@ public:
      */
     void collapse()
     {
-        const auto c_amnt = children_amnt();
+        const unsigned c_amnt { children_amnt() };
+
         for(unsigned i=0; i<c_amnt; ++i) {
             children[i]->collapse();
         }
@@ -147,8 +148,8 @@ public:
         assert(position < 64);
         assert(! is_set(position));
 
-        const auto cpos = get_children_position(position);
-        const auto c_amnt = children_amnt();
+        const unsigned cpos   { get_children_position(position) };
+        const unsigned c_amnt { children_amnt() };
 
         children.insert(cpos, new tree<value_type>(), c_amnt);
         values.insert(cpos, value, c_amnt);
@@ -165,8 +166,8 @@ public:
         assert(position < 64);
         assert(! is_set(position));
 
-        const auto cpos = get_children_position(position);
-        const auto c_amnt = children_amnt();
+        const unsigned cpos   { get_children_position(position) };
+        const unsigned c_amnt { children_amnt() };
 
         values.insert(cpos, value, c_amnt);
         chiset.set(position);
@@ -183,8 +184,8 @@ public:
         assert(is_set(position));
         assert(! is_leaf(position));
 
-        const auto cpos = get_children_position(position);
-        const auto c_amnt = children_amnt();
+        const unsigned cpos   { get_children_position(position) };
+        const unsigned c_amnt { children_amnt() };
 
         children[cpos]->collapse();
         children.erase(cpos);
@@ -245,9 +246,9 @@ public:
 
     std::size_t calculate_memory_size() const
     {
-        const auto c_amnt = children_amnt();
-        const auto l_amnt = leaf_amnt();
-        const auto v_amnt = c_amnt + l_amnt;
+        const unsigned c_amnt { children_amnt() };
+        const unsigned l_amnt { leaf_amnt() };
+        const unsigned v_amnt { c_amnt + l_amnt };
 
         std::size_t size {
               sizeof(chiset)
@@ -267,8 +268,7 @@ public:
     {
         std::size_t amount { children_amnt() };
 
-        const auto c_amnt = children_amnt();
-        for(unsigned i=0; i<c_amnt; ++i) {
+        for(unsigned i=0, c_amnt = children_amnt(); i<c_amnt; ++i) {
             amount += children[i]->calculate_children_amnt();
         }
 
@@ -279,20 +279,19 @@ public:
     {
         std::size_t amount { leaf_amnt() };
 
-        const auto c_amnt = children_amnt();
-        for(unsigned i=0; i<c_amnt; ++i) {
+        for(unsigned i=0, c_amnt = children_amnt(); i<c_amnt; ++i) {
             amount += children[i]->calculate_leaf_amount();
         }
 
         return amount;
     }
 
-    void mem_usage_info()
+    void mem_usage_info() const
     {
-        const auto memsize = calculate_memory_size();
-        const auto c_amnt  = calculate_children_amnt();
-        const auto l_amnt  = calculate_leaf_amount();
-        const auto v_amnt  = c_amnt + l_amnt;
+        const unsigned memsize { calculate_memory_size() };
+        const unsigned c_amnt  { calculate_children_amnt() };
+        const unsigned l_amnt  { calculate_leaf_amount() };
+        const unsigned v_amnt  { c_amnt + l_amnt };
 
         std::cout << "total:     " << memsize << std::endl;
         
