@@ -94,11 +94,7 @@ public:
     {
         assert(position < 64);
 
-        if(position == 0) {
-            return 0;
-        }
-
-        return popcount(chidist() << (64 - position));
+        return position == 0 ? position : popcount(chidist() << (64 - position));
     }
     
 
