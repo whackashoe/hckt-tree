@@ -37,17 +37,18 @@ constexpr unsigned init_capacity { 1 };
 template <typename T>
 class lmemvector
 {
+typedef T* iterator;
+typedef T value_type;
+
 private:
     void init()
     {
-        T * nb = new T[init_capacity];
+        iterator nb = new value_type[init_capacity];
         buf = nb;
     }
 
 public:
-    typedef T* iterator;
-
-    T * buf;
+    iterator buf;
 
     lmemvector() : buf { nullptr }
     {}
@@ -85,20 +86,20 @@ public:
         assert(position < 64);
         assert(size < 64);
 
-        std::memmove(buf + position, buf + position + 1, sizeof(T) * (size + 1 - position));
+        std::memmove(buf + position, buf + position + 1, sizeof(value_type) * (size + 1 - position));
     }
 
     void reserve(const unsigned new_capacity)
     {
         assert(new_capacity <= 64);
 
-        T * nb = new T[new_capacity];
+        iterator nb = new value_type[new_capacity];
         std::copy(&buf[0], &buf[new_capacity - 1], nb);
         delete[] buf;
         buf = nb;
     }
 
-    void insert(const unsigned position, const T value, const unsigned size)
+    void insert(const unsigned position, const value_type value, const unsigned size)
     {
         assert(position < 64);
         assert(size < 64);
@@ -110,7 +111,7 @@ public:
         }
 
         const iterator it = &buf[position];
-        std::memmove(it + 1, it, sizeof(T) * (size - position));
+        std::memmove(it + 1, it, sizeof(value_type) * (size - position));
         *it = value;
     }
 };
