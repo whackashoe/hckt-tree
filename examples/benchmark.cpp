@@ -7,16 +7,20 @@
 
 int main()
 {
-    for(size_t i=1; i<7; ++i) {
+    for(size_t i=0; i<7; ++i) {
         std::cout << "DEPTH " << i << std::endl;
-        auto start = std::chrono::steady_clock::now();
+        auto pstart = std::chrono::steady_clock::now();
         hckt::tree<uint32_t> m;
         populate(m, i);
+        auto pend = std::chrono::steady_clock::now();
+        auto pdiff = pend-pstart;
+        auto mstart = std::chrono::steady_clock::now();
         m.mem_usage_info();
-        auto end = std::chrono::steady_clock::now();
-        auto diff = end-start;
+        auto mend = std::chrono::steady_clock::now();
+        auto mdiff = mend - mstart;
         std::cout << std::endl;
-        std::cout << std::chrono::duration<double, std::milli>(diff).count() << " ms" << std::endl;
+        std::cout << "poptime: " << std::chrono::duration<double, std::milli>(pdiff).count() << " ms" << std::endl;
+        std::cout << "memtime: " << std::chrono::duration<double, std::milli>(mdiff).count() << " ms" << std::endl;
         std::cout << std::endl;
         std::cout << std::endl;
     }
