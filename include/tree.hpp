@@ -26,10 +26,10 @@
 #define HCKT_TREE_H
 
 #include <cassert>
-#include <vector>
 #include <iostream>
 #include <bitset>
 #include "lmemvector.hpp"
+#include "util.hpp"
 
 namespace hckt
 {
@@ -91,6 +91,11 @@ public:
     unsigned leaf_amnt() const
     {
         return popcount(~inv_leaf.to_ullong());
+    }
+
+    unsigned value_amount() const
+    {
+        return popcount(chiset.to_ullong());
     }
 
     unsigned get_children_position(const unsigned position) const
@@ -244,13 +249,12 @@ public:
     std::size_t calculate_memory_size() const
     {
         const unsigned c_amnt { children_amnt() };
-        const unsigned l_amnt { leaf_amnt() };
-        const unsigned v_amnt { c_amnt + l_amnt };
+        const unsigned v_amnt { value_amount() };
 
         std::size_t size {
               sizeof(chiset)
             + sizeof(inv_leaf)
-            + sizeof(values)   + (l_amnt * sizeof(value_type))
+            + sizeof(values)   + (v_amnt * sizeof(value_type))
             + sizeof(children) + (c_amnt * sizeof(tree<value_type>*))
         };
 
@@ -290,17 +294,17 @@ public:
         const unsigned l_amnt  { calculate_leaf_amount() };
         const unsigned v_amnt  { c_amnt + l_amnt };
 
-        std::cout << "total:     " << memsize << std::endl;
+        std::cout << "total:     " << hckt::render_size(memsize) << std::endl;
 
-        std::cout << "tree-size: " << sizeof(tree<value_type>) << std::endl;
-        std::cout << "val-size:  " << sizeof(value_type) << std::endl;
+        std::cout << "tree-size: " << hckt::render_size(sizeof(tree<value_type>)) << std::endl;
+        std::cout << "val-size:  " << hckt::render_size(sizeof(value_type)) << std::endl;
 
-        std::cout << "values:    " << v_amnt << std::endl;
-        std::cout << "children:  " << c_amnt << std::endl;
-        std::cout << "leaves:    " << l_amnt << std::endl;
+        std::cout << "values:    " << hckt::render_number(v_amnt) << std::endl;
+        std::cout << "children:  " << hckt::render_number(c_amnt) << std::endl;
+        std::cout << "leaves:    " << hckt::render_number(l_amnt) << std::endl;
 
-        std::cout << "per-val:   " << (static_cast<float>(memsize) / v_amnt) << std::endl;
-        std::cout << "overhead:  " << (static_cast<float>(memsize - (v_amnt * sizeof(value_type))) / v_amnt) << std::endl;
+        std::cout << "per-val:   " << (static_cast<float>(memsize) / v_amnt) << " B" << std::endl;
+        std::cout << "overhead:  " << (static_cast<float>(memsize - (v_amnt * sizeof(value_type))) / v_amnt) << " B" << std::endl;
     }
 
 };

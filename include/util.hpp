@@ -2,6 +2,11 @@
 #define HCKT_UTIL_H
 
 #include <cassert>
+#include <string>
+#include <iomanip>
+#include <locale>
+#include <sstream>
+#include <array>
 
 namespace hckt
 {
@@ -98,6 +103,42 @@ namespace hckt
         return ((d1 & 4) >> 2 << 0)
              + ((d2 & 4) >> 2 << 1);
     }
+
+    std::string render_size(const std::uint64_t size)
+    {
+        constexpr uint64_t exbibytes { 1024ULL * 1024ULL * 1024ULL * 1024ULL * 1024ULL * 1024ULL };
+        const std::array<std::string, 7> sizes = {{ "EiB", "PiB", "TiB", "GiB", "MiB", "KiB", "B" }};
+
+        std::string result { };
+        std::uint64_t multiplier { exbibytes };
+
+        for(int i=0; i<sizes.size(); i++, multiplier /= 1024) {   
+            if(size < multiplier) {
+                continue;
+            }
+            
+            if(size % multiplier == 0) {
+                result = std::to_string(size / multiplier) + " " + sizes[i];
+            } else {
+                result = std::to_string(static_cast<float>(size) / multiplier) + " " + sizes[i];
+            }
+
+            return result;
+        }
+    
+        result = "0";
+        return result;
+    }
+
+    template <typename NType>
+    std::string render_number(const NType number)
+    {
+        std::stringstream ss;
+        ss.imbue(std::locale(""));
+        ss << std::fixed << number;
+        return ss.str();
+    }
+
 };
 
 #endif
