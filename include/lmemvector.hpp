@@ -49,7 +49,7 @@ public:
 
     T * buf;
 
-    lmemvector() : buf { nullptr } 
+    lmemvector() : buf { nullptr }
     {}
 
     ~lmemvector()
@@ -60,9 +60,14 @@ public:
     }
 
     T operator[](const unsigned n) const
-    { return buf[n]; }
+    {
+        return buf[n];
+    }
+
     T & operator[](const unsigned n)
-    { return buf[n]; }
+    {
+        return buf[n];
+    }
 
     void clear(const unsigned size)
     {

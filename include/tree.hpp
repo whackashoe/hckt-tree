@@ -47,7 +47,10 @@ protected:
 
 public:
 
-    tree() : chiset { 0 }, inv_leaf { 0xFFFFFFFFFFFFFFFF }, values { }, children { }
+    tree() : chiset   { 0x0000000000000000 }
+           , inv_leaf { 0xFFFFFFFFFFFFFFFF }
+           , values   { }
+           , children { }
     {
     }
 
@@ -96,8 +99,6 @@ public:
 
         return position == 0 ? position : popcount(chidist() << (64 - position));
     }
-    
-
 
     /*
      * check if we have any children
@@ -290,10 +291,10 @@ public:
         const unsigned v_amnt  { c_amnt + l_amnt };
 
         std::cout << "total:     " << memsize << std::endl;
-        
+
         std::cout << "tree-size: " << sizeof(tree<value_type>) << std::endl;
         std::cout << "val-size:  " << sizeof(value_type) << std::endl;
-        
+
         std::cout << "values:    " << v_amnt << std::endl;
         std::cout << "children:  " << c_amnt << std::endl;
         std::cout << "leaves:    " << l_amnt << std::endl;
