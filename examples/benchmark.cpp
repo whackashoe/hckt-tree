@@ -7,10 +7,10 @@
 
 int main()
 {
-    for(size_t i=0; i<7; ++i) {
+    for(size_t i=0; i<8; ++i) {
         std::cout << "DEPTH " << i << std::endl;
         auto pstart = std::chrono::steady_clock::now();
-        hckt::tree<uint32_t> m;
+        hckt::tree<short> m;
         populate(m, i);
         auto pend = std::chrono::steady_clock::now();
         auto pdiff = pend-pstart;
