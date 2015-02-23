@@ -289,10 +289,10 @@ public:
 
     void mem_usage_info() const
     {
-        const unsigned memsize { calculate_memory_size() };
-        const unsigned c_amnt  { calculate_children_amnt() };
-        const unsigned l_amnt  { calculate_leaf_amount() };
-        const unsigned v_amnt  { c_amnt + l_amnt };
+        const std::size_t memsize { calculate_memory_size() };
+        const std::size_t c_amnt  { calculate_children_amnt() };
+        const std::size_t l_amnt  { calculate_leaf_amount() };
+        const std::size_t v_amnt  { c_amnt + l_amnt };
 
         std::cout << "total:     " << hckt::render_size(memsize) << std::endl;
 
@@ -303,8 +303,8 @@ public:
         std::cout << "children:  " << hckt::render_number(c_amnt) << std::endl;
         std::cout << "leaves:    " << hckt::render_number(l_amnt) << std::endl;
 
-        std::cout << "per-val:   " << (static_cast<float>(memsize) / v_amnt) << " B" << std::endl;
-        std::cout << "overhead:  " << (static_cast<float>(memsize - (v_amnt * sizeof(value_type))) / v_amnt) << " B" << std::endl;
+        std::cout << "per-val:   " << (static_cast<double>(memsize) / v_amnt) << " B" << std::endl;
+        std::cout << "overhead:  " << (static_cast<double>(memsize - (v_amnt * sizeof(value_type))) / v_amnt) << " B" << std::endl;
     }
 
 };

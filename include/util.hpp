@@ -120,7 +120,7 @@ namespace hckt
             if(size % multiplier == 0) {
                 result = std::to_string(size / multiplier) + " " + sizes[i];
             } else {
-                result = std::to_string(static_cast<float>(size) / multiplier) + " " + sizes[i];
+                result = std::to_string(static_cast<double>(size) / multiplier) + " " + sizes[i];
             }
 
             return result;
