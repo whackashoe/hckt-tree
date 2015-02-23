@@ -63,7 +63,7 @@ public:
     static inline unsigned popcount(std::uint64_t x)
     {
 #ifdef __SSE4_2__
-        return _popcnt64(x);
+        return _mm_popcnt_u64(x);
 #else
         constexpr std::uint64_t m1  { 0x5555555555555555 };
         constexpr std::uint64_t m2  { 0x3333333333333333 };
