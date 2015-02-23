@@ -1,4 +1,4 @@
-CXXFLAGS=-O2 -std=c++11 -Wall -Wextra -Weffc++ -march=native
+CXXFLAGS=-O2 -std=c++11 -Wall -Wextra -Weffc++ -march=native -m64 -msse4.2
 SFML_LD_FLAGS= -lsfml-system -lsfml-graphics -lsfml-window
 CXX=g++
 
